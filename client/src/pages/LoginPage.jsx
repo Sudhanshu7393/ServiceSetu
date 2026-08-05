@@ -17,34 +17,34 @@ import {
 
 export default function LoginPage({ onLogin }) {
   const [selectedRole, setSelectedRole] = useState('customer'); // customer, mechanic, admin
-  const [identifier, setIdentifier] = useState('+91 98200 12345');
-  const [password, setPassword] = useState('123456');
+  const [identifier, setIdentifier] = useState('+91 ');
+  const [password, setPassword] = useState('');
 
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     if (selectedRole === 'customer') {
       onLogin({
         role: 'customer',
-        name: 'Amit Patel',
+        name: identifier ? `User (${identifier})` : 'Customer Account',
         phone: identifier,
-        avatar: 'AP',
-        badge: 'Gold Member'
+        avatar: 'CU',
+        badge: 'Verified Customer'
       });
     } else if (selectedRole === 'mechanic') {
       onLogin({
         role: 'mechanic',
-        name: 'Rajesh Kumar',
-        phone: '+91 98765 43210',
-        mechanicId: 'mech-101',
+        name: 'Verified Mechanic',
+        phone: identifier || '+91 9876543210',
+        mechanicId: identifier || 'MECH-101',
         avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150',
-        badge: 'Verified Expert'
+        badge: 'Doorstep Expert'
       });
     } else if (selectedRole === 'admin') {
       onLogin({
         role: 'admin',
-        name: 'Operations Admin',
-        email: 'admin@servicesetu.in',
-        avatar: 'AD',
+        name: 'Sudhanshu Pandey',
+        email: identifier || 'sudhanshupandey7393@gmail.com',
+        avatar: 'SP',
         badge: 'Platform SuperAdmin'
       });
     }
@@ -54,7 +54,7 @@ export default function LoginPage({ onLogin }) {
     <div className="min-h-[calc(100vh-4rem)] bg-slate-950 flex items-center justify-center p-4 sm:p-8">
       <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-12 gap-0 bg-slate-900 rounded-3xl border border-slate-800 shadow-2xl overflow-hidden">
         
-        {/* LEFT COLUMN: BRAND HERO SHOWCASE (5 COLS) */}
+        {/* LEFT COLUMN: BRAND HERO SHOWCASE */}
         <div className="lg:col-span-5 gradient-bg p-8 sm:p-10 text-white flex flex-col justify-between relative overflow-hidden">
           <div className="absolute -top-10 -left-10 w-40 h-40 bg-teal-500/20 rounded-full blur-3xl"></div>
           <div className="relative z-10 space-y-6">
@@ -108,11 +108,11 @@ export default function LoginPage({ onLogin }) {
 
           <div className="relative z-10 pt-8 border-t border-white/10 flex items-center justify-between text-xs text-slate-300">
             <span className="flex items-center font-bold"><Star className="w-4 h-4 text-amber-400 fill-amber-400 mr-1" /> 4.9 Rating</span>
-            <span>• 10,000+ Serviced Bikes</span>
+            <span>• Verified Doorstep Quality</span>
           </div>
         </div>
 
-        {/* RIGHT COLUMN: SLEEK LOGIN CARD (7 COLS) */}
+        {/* RIGHT COLUMN: LOGIN CARD */}
         <div className="lg:col-span-7 bg-white p-8 sm:p-12 flex flex-col justify-between">
           <div>
             
@@ -130,7 +130,7 @@ export default function LoginPage({ onLogin }) {
                 type="button"
                 onClick={() => {
                   setSelectedRole('customer');
-                  setIdentifier('+91 98200 12345');
+                  setIdentifier('+91 ');
                 }}
                 className={`py-2.5 rounded-xl transition-all flex items-center justify-center space-x-1.5 ${
                   selectedRole === 'customer' 
@@ -162,7 +162,7 @@ export default function LoginPage({ onLogin }) {
                 type="button"
                 onClick={() => {
                   setSelectedRole('admin');
-                  setIdentifier('admin@servicesetu.in');
+                  setIdentifier('sudhanshupandey7393@gmail.com');
                 }}
                 className={`py-2.5 rounded-xl transition-all flex items-center justify-center space-x-1.5 ${
                   selectedRole === 'admin' 
@@ -179,13 +179,14 @@ export default function LoginPage({ onLogin }) {
             <form onSubmit={handleLoginSubmit} className="space-y-4 text-xs">
               <div>
                 <label className="block font-bold text-slate-700 mb-1">
-                  {selectedRole === 'customer' ? 'Mobile Phone Number' : selectedRole === 'mechanic' ? 'Mechanic ID' : 'Admin Email'}
+                  {selectedRole === 'customer' ? 'Mobile Phone Number' : selectedRole === 'mechanic' ? 'Mechanic ID' : 'SuperAdmin Email'}
                 </label>
                 <div className="relative">
                   <input
                     type="text"
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
+                    placeholder={selectedRole === 'customer' ? '+91 98000 00000' : selectedRole === 'mechanic' ? 'MECH-101' : 'sudhanshupandey7393@gmail.com'}
                     className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-300 font-semibold text-slate-900 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm"
                   />
                   <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-4" />
@@ -199,6 +200,7 @@ export default function LoginPage({ onLogin }) {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter security password"
                     className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-300 font-semibold text-slate-900 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm"
                   />
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-4" />
@@ -209,42 +211,42 @@ export default function LoginPage({ onLogin }) {
                 type="submit"
                 className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-extrabold py-3.5 rounded-xl transition-all shadow-lg text-sm flex items-center justify-center space-x-2 mt-4"
               >
-                <span>Login as {selectedRole === 'customer' ? 'Customer' : selectedRole === 'mechanic' ? 'Mechanic' : 'Admin'}</span>
+                <span>Login as {selectedRole === 'customer' ? 'Customer' : selectedRole === 'mechanic' ? 'Mechanic' : 'Main Admin'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </form>
 
-            {/* Quick Demo Login Chips */}
+            {/* Account Role Direct Login */}
             <div className="mt-6 pt-6 border-t border-slate-100">
               <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-3">
-                Quick 1-Click Demo Login
+                Quick Category Access
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <button
                   type="button"
-                  onClick={() => onLogin({ role: 'customer', name: 'Amit Patel', phone: '+91 98200 12345', badge: 'Gold Member' })}
+                  onClick={() => onLogin({ role: 'customer', name: 'Customer Account', phone: '+91 9800000000', badge: 'Verified Customer' })}
                   className="p-2.5 rounded-xl bg-slate-50 border hover:bg-teal-50 hover:border-teal-300 text-left transition-all text-xs"
                 >
                   <strong className="text-slate-900 block font-bold text-[11px]">👤 Customer</strong>
-                  <span className="text-slate-500 text-[10px]">Amit Patel</span>
+                  <span className="text-slate-500 text-[10px]">Booking Portal</span>
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => onLogin({ role: 'mechanic', name: 'Rajesh Kumar', mechanicId: 'mech-101', badge: 'Verified Expert' })}
+                  onClick={() => onLogin({ role: 'mechanic', name: 'Verified Mechanic', mechanicId: 'MECH-101', badge: 'Doorstep Expert' })}
                   className="p-2.5 rounded-xl bg-slate-50 border hover:bg-teal-50 hover:border-teal-300 text-left transition-all text-xs"
                 >
                   <strong className="text-slate-900 block font-bold text-[11px]">🔧 Mechanic</strong>
-                  <span className="text-slate-500 text-[10px]">Rajesh Kumar</span>
+                  <span className="text-slate-500 text-[10px]">Job Execution</span>
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => onLogin({ role: 'admin', name: 'Operations Admin', badge: 'SuperAdmin' })}
+                  onClick={() => onLogin({ role: 'admin', name: 'Sudhanshu Pandey', email: 'sudhanshupandey7393@gmail.com', badge: 'Platform SuperAdmin' })}
                   className="p-2.5 rounded-xl bg-slate-50 border hover:bg-teal-50 hover:border-teal-300 text-left transition-all text-xs"
                 >
-                  <strong className="text-slate-900 block font-bold text-[11px]">🛡️ Admin</strong>
-                  <span className="text-slate-500 text-[10px]">SuperAdmin</span>
+                  <strong className="text-slate-900 block font-bold text-[11px]">🛡️ Main Admin</strong>
+                  <span className="text-slate-500 text-[10px]">Sudhanshu Pandey</span>
                 </button>
               </div>
             </div>
