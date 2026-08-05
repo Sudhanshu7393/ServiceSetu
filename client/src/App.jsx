@@ -11,17 +11,11 @@ import AmcPage from './pages/AmcPage';
 import CustomerAccountPage from './pages/CustomerAccountPage';
 
 export default function App() {
-  const [currentUser, setCurrentUser] = useState({
-    role: 'customer',
-    name: 'Amit Patel',
-    phone: '+91 98200 12345',
-    avatar: 'AP',
-    badge: 'Gold Member'
-  });
-
+  // Default to null user so visitors must log in
+  const [currentUser, setCurrentUser] = useState(null);
   const [activeTab, setActiveTab] = useState('booking');
   const [selectedBookingForReport, setSelectedBookingForReport] = useState('SS-2026-8801');
-  const [isLoginPage, setIsLoginPage] = useState(false);
+  const [isLoginPage, setIsLoginPage] = useState(true);
 
   const handleLogin = (userData) => {
     setCurrentUser(userData);
@@ -37,6 +31,7 @@ export default function App() {
   };
 
   const handleLogout = () => {
+    setCurrentUser(null);
     setIsLoginPage(true);
   };
 
@@ -58,7 +53,7 @@ export default function App() {
       />
 
       <main className="flex-grow">
-        {isLoginPage ? (
+        {isLoginPage || !currentUser ? (
           <LoginPage onLogin={handleLogin} />
         ) : (
           <>
