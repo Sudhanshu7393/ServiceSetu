@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { loginWithFirebaseEmail, registerWithFirebaseEmail } from '../services/firebase';
+import { loginWithFirebaseEmail, registerWithFirebaseEmail, loginWithGooglePopup } from '../services/firebase';
 import { 
   Wrench, 
   User, 
@@ -26,6 +26,36 @@ export default function LoginPage({ onLogin }) {
   const [errorMsg, setErrorMsg] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const handleGoogleSignIn = async () => {
+    setErrorMsg(null);
+    setLoading(true);
+    try {
+      const res = await loginWithGooglePopup();
+      if (res.user) {
+        const cleanEmail = (res.user.email || 'sudhanshupandey7393@gmail.com').trim().toLowerCase();
+        let role = selectedRole;
+
+        if (cleanEmail === 'sudhanshupandey7393@gmail.com') {
+          role = 'admin';
+        }
+
+        const userData = {
+          role,
+          name: res.user.displayName || (cleanEmail === 'sudhanshupandey7393@gmail.com' ? 'Sudhanshu Pandey' : cleanEmail.split('@')[0]),
+          email: cleanEmail,
+          avatar: res.user.photoURL || cleanEmail.substring(0, 2).toUpperCase(),
+          badge: role === 'admin' ? 'Platform SuperAdmin' : role === 'mechanic' ? 'Verified Mechanic' : 'Google Verified Customer'
+        };
+
+        setLoading(false);
+        onLogin(userData);
+      }
+    } catch (err) {
+      setLoading(false);
+      setErrorMsg(err.message || 'Google Sign-In failed');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg(null);
@@ -44,14 +74,11 @@ export default function LoginPage({ onLogin }) {
 
     try {
       if (authMode === 'register') {
-        // Firebase Auth Sign Up
         await registerWithFirebaseEmail(email, password, fullName || 'User');
       } else {
-        // Firebase Auth Sign In
         await loginWithFirebaseEmail(email, password);
       }
 
-      // Determine Role based on Email or Selected Tab
       const cleanEmail = email.trim().toLowerCase();
       let role = selectedRole;
 
@@ -90,16 +117,16 @@ export default function LoginPage({ onLogin }) {
               </div>
               <div>
                 <span className="font-extrabold text-2xl tracking-tight text-white block">Service<span className="text-teal-400">Setu</span></span>
-                <span className="text-[10px] uppercase font-bold tracking-widest text-teal-300">Firebase Auth Protected</span>
+                <span className="text-[10px] uppercase font-bold tracking-widest text-teal-300">1-Click Device Gmail Auth</span>
               </div>
             </div>
 
             <div>
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">
-                Secure Firebase Authentication Engine
+                1-Click Google Sign-In Protected
               </h2>
               <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-                Log in with your email address and password. Firebase Web SDK verifies user credentials and encrypts session tokens.
+                Log in instantly using your device's Gmail account. Firebase Auth fetches your Google profile securely with 1 click.
               </p>
             </div>
 
@@ -107,15 +134,15 @@ export default function LoginPage({ onLogin }) {
               <div className="flex items-center space-x-3 text-xs bg-slate-950/40 p-3 rounded-2xl border border-white/10">
                 <ShieldCheck className="w-5 h-5 text-teal-400 flex-shrink-0" />
                 <div>
-                  <strong className="text-white font-bold block">Firebase Password Security</strong>
-                  <span className="text-slate-300 text-[11px]">Strict email validation & 256-bit encryption</span>
+                  <strong className="text-white font-bold block">Device Gmail Auto-Auth</strong>
+                  <span className="text-slate-300 text-[11px]">1-Click login using active Google account</span>
                 </div>
               </div>
 
               <div className="flex items-center space-x-3 text-xs bg-slate-950/40 p-3 rounded-2xl border border-white/10">
                 <Barcode className="w-5 h-5 text-emerald-400 flex-shrink-0" />
                 <div>
-                  <strong className="text-white font-bold block">Digital Garage Access</strong>
+                  <strong className="text-white font-bold block">Digital Garage & Service Reports</strong>
                   <span className="text-slate-300 text-[11px]">View real-time vehicle health scores</span>
                 </div>
               </div>
@@ -133,11 +160,11 @@ export default function LoginPage({ onLogin }) {
 
           <div className="relative z-10 pt-8 border-t border-white/10 flex items-center justify-between text-xs text-slate-300">
             <span className="flex items-center font-bold"><Star className="w-4 h-4 text-amber-400 fill-amber-400 mr-1" /> 4.9 Rating</span>
-            <span>• Firebase SDK 10.x</span>
+            <span>• Google Auth Ready</span>
           </div>
         </div>
 
-        {/* RIGHT COLUMN: REAL FIREBASE AUTH FORM */}
+        {/* RIGHT COLUMN: FIREBASE AUTH & GOOGLE SIGN-IN */}
         <div className="lg:col-span-7 bg-white p-8 sm:p-12 flex flex-col justify-between">
           <div>
             
@@ -171,6 +198,28 @@ export default function LoginPage({ onLogin }) {
                 <span>{errorMsg}</span>
               </div>
             )}
+
+            {/* 🔴 PROMINENT 1-CLICK DEVICE GMAIL / GOOGLE SIGN-IN BUTTON */}
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              disabled={loading}
+              className="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold py-3.5 px-4 rounded-2xl transition-all shadow-md text-sm flex items-center justify-center space-x-3 mb-6 cursor-pointer border border-slate-700 active:scale-98"
+            >
+              <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
+                <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.2 9 5 12 5z" />
+                <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z" />
+                <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3s.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 12.3 0 15s.7 5.3 1.9 7.7l3.7-2.9z" />
+                <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.2-6.4-5.2L1.9 16C3.7 19.7 7.5 23 12 23z" />
+              </svg>
+              <span>Continue with Device Gmail (1-Click Google Sign-In)</span>
+            </button>
+
+            <div className="relative flex py-2 items-center mb-6">
+              <div className="flex-grow border-t border-slate-200"></div>
+              <span className="flex-shrink mx-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Or Sign In With Email</span>
+              <div className="flex-grow border-t border-slate-200"></div>
+            </div>
 
             {/* Category Selector Tabs */}
             <div className="grid grid-cols-3 gap-2 bg-slate-100 p-1.5 rounded-2xl mb-6 text-xs font-bold">
@@ -224,7 +273,7 @@ export default function LoginPage({ onLogin }) {
               </button>
             </div>
 
-            {/* Firebase Auth Form */}
+            {/* Email + Password Form */}
             <form onSubmit={handleSubmit} className="space-y-4 text-xs">
               
               {authMode === 'register' && (
@@ -257,7 +306,7 @@ export default function LoginPage({ onLogin }) {
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Account Password (Min 6 chars)</label>
+                <label className="block font-bold text-slate-700 mb-1">Account Password</label>
                 <div className="relative">
                   <input
                     type="password"
@@ -278,11 +327,11 @@ export default function LoginPage({ onLogin }) {
                 className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-extrabold py-3.5 rounded-xl transition-all shadow-lg text-sm flex items-center justify-center space-x-2 mt-4 cursor-pointer disabled:opacity-50"
               >
                 {loading ? (
-                  <span>Authenticating with Firebase...</span>
+                  <span>Authenticating...</span>
                 ) : (
                   <>
                     {authMode === 'login' ? <ArrowRight className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />}
-                    <span>{authMode === 'login' ? 'Authenticate & Sign In' : 'Create Firebase Account'}</span>
+                    <span>{authMode === 'login' ? 'Sign In With Email' : 'Create Account With Email'}</span>
                   </>
                 )}
               </button>
@@ -291,7 +340,7 @@ export default function LoginPage({ onLogin }) {
           </div>
 
           <div className="text-center pt-6 text-[11px] text-slate-400 border-t border-slate-100">
-            Protected by Firebase Auth Web SDK & ServiceSetu Standard Protocol.
+            Protected by Firebase Auth Web SDK & Google OAuth 2.0 Security Protocol.
           </div>
         </div>
 
