@@ -22,9 +22,22 @@ app.get('/health', (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`==================================================`);
-  console.log(` 🛠️  ServiceSetu Backend API running on port ${PORT}`);
-  console.log(` 🌐 Health endpoint: http://localhost:${PORT}/health`);
-  console.log(`==================================================`);
-});
+// Serve frontend static files if running in combined mode
+if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
+  const clientDist = path.join(__dirname, '../../client/dist');
+  app.use(express.static(clientDist));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(clientDist, 'index.html'));
+  });
+}
+
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`==================================================`);
+    console.log(` 🛠️  ServiceSetu Backend API running on port ${PORT}`);
+    console.log(` 🌐 Health endpoint: http://localhost:${PORT}/health`);
+    console.log(`==================================================`);
+  });
+}
+
+module.exports = app;
