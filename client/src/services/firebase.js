@@ -10,14 +10,15 @@ import {
   updateProfile
 } from 'firebase/auth';
 
-// Firebase Web Configuration
+// Firebase Web Configuration — Real Service-bike Project
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyServiceSetuProductionAuthKey2026",
-  authDomain: "servicesetu-prod.firebaseapp.com",
-  projectId: "servicesetu-prod",
-  storageBucket: "servicesetu-prod.appspot.com",
-  messagingSenderId: "982001234567",
-  appId: "1:982001234567:web:servicesetu2026auth"
+  apiKey: "AIzaSyCvIdu_306njWx6L9OmBCJEeJCiDBLLwH0",
+  authDomain: "service-bike-95247.firebaseapp.com",
+  projectId: "service-bike-95247",
+  storageBucket: "service-bike-95247.firebasestorage.app",
+  messagingSenderId: "77923581474",
+  appId: "1:77923581474:web:70088fdfb7d9bb4f09d47b",
+  measurementId: "G-MCWVS6KEGW"
 };
 
 let app;
