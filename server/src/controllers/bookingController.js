@@ -1,396 +1,295 @@
-const db = require('../data/database');
-const { verifiedMechanics, servicePackages, oilOptions } = require('../data/db');
+const supabase = require('../data/database');
 
-// Helper function to auto-assign nearest mechanic
-function autoAssignMechanic(lat, lng) {
-  if (!verifiedMechanics || verifiedMechanics.length === 0) return null;
-  let nearestMech = verifiedMechanics[0];
-  let minDistance = Infinity;
+// GET all bookings for a mechanic
+const getMechanicJobs = async (req, res) => {
+  try {
+    const { mechanicId } = req.params;
 
-  verifiedMechanics.forEach(mech => {
-    const d = Math.sqrt(Math.pow(mech.currentLat - lat, 2) + Math.pow(mech.currentLng - lng, 2));
-    if (d < minDistance) {
-      minDistance = d;
-      nearestMech = mech;
-    }
-  });
-  return nearestMech;
-}
+    const { data: bookings, error } = await supabase
+      .from('bookings')
+      .select(`
+        *,
+        products_used (*)
+      `)
+      .eq('mechanic_id', mechanicId)
+      .order('created_at', { ascending: false });
 
-// Parse JSON fields from DB row
-function parseBookingRow(row) {
-  if (!row) return null;
-  return {
-    ...row,
-    vehicle: JSON.parse(row.vehicle || '{}'),
-    package: JSON.parse(row.package || '{}'),
-    oilOption: JSON.parse(row.oilOption || '{}'),
-    pricing: JSON.parse(row.pricing || '{}'),
-    locationCoords: JSON.parse(row.locationCoords || '{}'),
-    mechanic: JSON.parse(row.mechanic || '{}'),
-    beforePhotos: JSON.parse(row.beforePhotos || '[]'),
-    inspectionDetails: JSON.parse(row.inspectionDetails || '{}'),
-    usedProducts: JSON.parse(row.usedProducts || '[]'),
-    checklist: JSON.parse(row.checklist || '[]'),
-    afterPhotos: JSON.parse(row.afterPhotos || '[]'),
-    diagnosisDetails: row.diagnosisDetails ? JSON.parse(row.diagnosisDetails) : null,
-    workshopDetails: row.workshopDetails ? JSON.parse(row.workshopDetails) : null,
-    otpConfirmed: Boolean(row.otpConfirmed)
-  };
-}
+    if (error) throw error;
 
-// Create new booking in SQLite DB
-exports.createBooking = (req, res) => {
+    const formattedBookings = (bookings || []).map(b => ({
+      id: b.id,
+      customerName: b.customer_name,
+      customerPhone: b.customer_phone,
+      customerEmail: b.customer_email,
+      vehicle: {
+        make: b.vehicle_make,
+        model: b.vehicle_model,
+        year: b.vehicle_year,
+        reg: b.vehicle_reg
+      },
+      address: b.address,
+      serviceType: b.service_type,
+      status: b.status,
+      mechanicId: b.mechanic_id,
+      totalPrice: b.total_price,
+      inspectionDetails: b.inspection_details || {},
+      paymentStatus: b.payment_status,
+      usedProducts: (b.products_used || []).map(p => ({
+        name: p.name,
+        barcode: p.barcode
+      })),
+      createdAt: b.created_at
+    }));
+
+    res.json({ jobs: formattedBookings });
+  } catch (err) {
+    console.error('getMechanicJobs error:', err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// GET all bookings (Admin)
+const getAllBookings = async (req, res) => {
+  try {
+    const { data: bookings, error } = await supabase
+      .from('bookings')
+      .select(`*, products_used (*)`)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    const formattedBookings = (bookings || []).map(b => ({
+      id: b.id,
+      customerName: b.customer_name,
+      customerPhone: b.customer_phone,
+      customerEmail: b.customer_email,
+      vehicle: {
+        make: b.vehicle_make,
+        model: b.vehicle_model,
+        year: b.vehicle_year,
+        reg: b.vehicle_reg
+      },
+      address: b.address,
+      serviceType: b.service_type,
+      status: b.status,
+      mechanicId: b.mechanic_id,
+      totalPrice: b.total_price,
+      inspectionDetails: b.inspection_details || {},
+      paymentStatus: b.payment_status,
+      usedProducts: (b.products_used || []).map(p => ({ name: p.name, barcode: p.barcode })),
+      createdAt: b.created_at
+    }));
+
+    res.json({ bookings: formattedBookings });
+  } catch (err) {
+    console.error('getAllBookings error:', err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// CREATE new booking
+const createBooking = async (req, res) => {
   try {
     const {
-      customerName,
-      customerPhone,
-      vehicle,
-      packageId,
-      oilOptionId,
-      date,
-      timeSlot,
-      address,
-      pincode,
-      locationCoords,
-      paymentMethod
+      customerName, customerPhone, customerEmail,
+      vehicleMake, vehicleModel, vehicleYear, vehicleReg,
+      address, serviceType, mechanicId, totalPrice
     } = req.body;
 
-    if (!customerName || !customerPhone || !vehicle || !packageId || !date || !timeSlot || !address) {
-      return res.status(400).json({ success: false, message: 'Please provide all required booking details.' });
-    }
-
-    const selectedPkg = servicePackages.find(p => p.id === packageId) || servicePackages[0];
-    const selectedOil = oilOptions.find(o => o.id === oilOptionId) || oilOptions[0];
-
-    const basePrice = selectedPkg.price;
-    const oilUpgradeCost = selectedOil.priceDifference;
-    const subtotal = basePrice + oilUpgradeCost;
-    const gstAmount = Math.round(subtotal * 0.18);
-    const totalPrice = subtotal + gstAmount;
-
-    let flowType = 'routine_doorstep';
-    if (selectedPkg.serviceType === 'heavy_workshop') {
-      flowType = 'heavy_workshop_pickup';
-    } else if (selectedPkg.serviceType === 'unclear_diagnosis') {
-      flowType = 'unclear_diagnosis_visit';
-    }
-
-    const lat = locationCoords?.lat || 12.9716;
-    const lng = locationCoords?.lng || 77.5946;
-    const assignedMechanic = autoAssignMechanic(lat, lng);
-
-    const bookingId = `SS-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const bookingId = 'BK-' + Date.now();
     const otp = Math.floor(1000 + Math.random() * 9000).toString();
-    const createdAt = new Date().toISOString();
 
-    const insertStmt = db.prepare(`
-      INSERT INTO bookings (
-        id, customerName, customerPhone, vehicle, package, oilOption, pricing,
-        totalPrice, date, timeSlot, address, pincode, locationCoords, status,
-        flowType, mechanic, otp, otpConfirmed, beforePhotos, odometerReading,
-        inspectionDetails, usedProducts, checklist, afterPhotos, paymentMethod, createdAt
-      ) VALUES (
-        @id, @customerName, @customerPhone, @vehicle, @package, @oilOption, @pricing,
-        @totalPrice, @date, @timeSlot, @address, @pincode, @locationCoords, @status,
-        @flowType, @mechanic, @otp, @otpConfirmed, @beforePhotos, @odometerReading,
-        @inspectionDetails, @usedProducts, @checklist, @afterPhotos, @paymentMethod, @createdAt
-      )
-    `);
+    const { data, error } = await supabase
+      .from('bookings')
+      .insert([{
+        id: bookingId,
+        customer_name: customerName || 'Customer',
+        customer_phone: customerPhone || '',
+        customer_email: customerEmail || '',
+        vehicle_make: vehicleMake || '',
+        vehicle_model: vehicleModel || '',
+        vehicle_year: vehicleYear || '',
+        vehicle_reg: vehicleReg || '',
+        address: address || '',
+        service_type: serviceType || 'General Service',
+        status: 'Confirmed',
+        mechanic_id: mechanicId || 'mech-101',
+        total_price: totalPrice || 0,
+        payment_status: 'Pending',
+        otp,
+        inspection_details: {}
+      }])
+      .select()
+      .single();
 
-    insertStmt.run({
-      id: bookingId,
-      customerName,
-      customerPhone,
-      vehicle: JSON.stringify(vehicle),
-      package: JSON.stringify(selectedPkg),
-      oilOption: JSON.stringify(selectedOil),
-      pricing: JSON.stringify({ basePrice, oilUpgradeCost, subtotal, gstAmount, totalPrice }),
-      totalPrice,
-      date,
-      timeSlot,
-      address,
-      pincode: pincode || '560001',
-      locationCoords: JSON.stringify({ lat, lng }),
-      status: 'Assigned',
-      flowType,
-      mechanic: JSON.stringify(assignedMechanic),
-      otp,
-      otpConfirmed: 0,
-      beforePhotos: JSON.stringify([]),
-      odometerReading: '',
-      inspectionDetails: JSON.stringify({}),
-      usedProducts: JSON.stringify([]),
-      checklist: JSON.stringify(selectedPkg.features.map(f => ({ item: f, status: 'Pending', note: '' }))),
-      afterPhotos: JSON.stringify([]),
-      paymentMethod: paymentMethod || 'Razorpay Online',
-      createdAt
+    if (error) throw error;
+
+    res.status(201).json({
+      booking: {
+        id: data.id,
+        customerName: data.customer_name,
+        status: data.status,
+        otp: data.otp
+      }
     });
-
-    const createdRow = db.prepare('SELECT * FROM bookings WHERE id = ?').get(bookingId);
-    const newBooking = parseBookingRow(createdRow);
-
-    return res.status(201).json({
-      success: true,
-      message: 'Booking created and saved in SQLite Persistent Database!',
-      booking: newBooking
-    });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+  } catch (err) {
+    console.error('createBooking error:', err);
+    res.status(500).json({ error: err.message });
   }
 };
 
-// Get bookings from SQL
-exports.getBookings = (req, res) => {
-  try {
-    const { status, phone } = req.query;
-    let sql = 'SELECT * FROM bookings';
-    const params = [];
-
-    if (status && phone) {
-      sql += ' WHERE LOWER(status) = LOWER(?) AND customerPhone = ?';
-      params.push(status, phone);
-    } else if (status) {
-      sql += ' WHERE LOWER(status) = LOWER(?)';
-      params.push(status);
-    } else if (phone) {
-      sql += ' WHERE customerPhone = ?';
-      params.push(phone);
-    }
-
-    sql += ' ORDER BY createdAt DESC';
-
-    const rows = db.prepare(sql).all(...params);
-    const parsedBookings = rows.map(parseBookingRow);
-
-    return res.status(200).json({
-      success: true,
-      count: parsedBookings.length,
-      bookings: parsedBookings
-    });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
-  }
-};
-
-// Get single booking
-exports.getBookingById = (req, res) => {
+// UPDATE booking status + inspection
+const updateBookingStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const row = db.prepare('SELECT * FROM bookings WHERE id = ?').get(id);
-    if (!row) {
-      return res.status(404).json({ success: false, message: `Booking ${id} not found.` });
-    }
-    return res.status(200).json({ success: true, booking: parseBookingRow(row) });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
-  }
-};
+    const { status, inspectionDetails } = req.body;
 
-// Update booking status
-exports.updateBookingStatus = (req, res) => {
-  try {
-    const { id } = req.params;
-    const { status, odometerReading, beforePhotos, afterPhotos, checklist, inspectionDetails, diagnosisDetails, workshopDetails } = req.body;
+    const updateData = {
+      updated_at: new Date().toISOString()
+    };
+    if (status) updateData.status = status;
+    if (inspectionDetails) updateData.inspection_details = inspectionDetails;
 
-    const row = db.prepare('SELECT * FROM bookings WHERE id = ?').get(id);
-    if (!row) {
-      return res.status(404).json({ success: false, message: `Booking ${id} not found.` });
-    }
+    const { data, error } = await supabase
+      .from('bookings')
+      .update(updateData)
+      .eq('id', id)
+      .select(`*, products_used (*)`)
+      .single();
 
-    const currentBooking = parseBookingRow(row);
+    if (error) throw error;
 
-    const updatedStatus = status || currentBooking.status;
-    const updatedOdo = odometerReading !== undefined ? odometerReading : currentBooking.odometerReading;
-    const updatedBefore = beforePhotos ? JSON.stringify(beforePhotos) : JSON.stringify(currentBooking.beforePhotos);
-    const updatedAfter = afterPhotos ? JSON.stringify(afterPhotos) : JSON.stringify(currentBooking.afterPhotos);
-    const updatedChecklist = checklist ? JSON.stringify(checklist) : JSON.stringify(currentBooking.checklist);
-    const updatedInspection = inspectionDetails ? JSON.stringify(inspectionDetails) : JSON.stringify(currentBooking.inspectionDetails);
-    const updatedDiag = diagnosisDetails ? JSON.stringify(diagnosisDetails) : (currentBooking.diagnosisDetails ? JSON.stringify(currentBooking.diagnosisDetails) : null);
-    const updatedShop = workshopDetails ? JSON.stringify(workshopDetails) : (currentBooking.workshopDetails ? JSON.stringify(currentBooking.workshopDetails) : null);
-
-    db.prepare(`
-      UPDATE bookings SET 
-        status = ?, odometerReading = ?, beforePhotos = ?, afterPhotos = ?,
-        checklist = ?, inspectionDetails = ?, diagnosisDetails = ?, workshopDetails = ?
-      WHERE id = ?
-    `).run(updatedStatus, updatedOdo, updatedBefore, updatedAfter, updatedChecklist, updatedInspection, updatedDiag, updatedShop, id);
-
-    const updatedRow = db.prepare('SELECT * FROM bookings WHERE id = ?').get(id);
-
-    return res.status(200).json({
-      success: true,
-      message: `Booking ${id} updated in SQLite DB.`,
-      booking: parseBookingRow(updatedRow)
+    res.json({
+      booking: {
+        id: data.id,
+        customerName: data.customer_name,
+        status: data.status,
+        inspectionDetails: data.inspection_details,
+        usedProducts: (data.products_used || []).map(p => ({ name: p.name, barcode: p.barcode }))
+      }
     });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+  } catch (err) {
+    console.error('updateBookingStatus error:', err);
+    res.status(500).json({ error: err.message });
   }
 };
 
-// Add product used & duplicate barcode check via SQL
-exports.addProductUsed = (req, res) => {
+// ADD product used (barcode scan)
+const addProductUsed = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, barcode, photo } = req.body;
+    const { name, barcode } = req.body;
 
-    if (!name || !barcode) {
-      return res.status(400).json({ success: false, message: 'Product name and barcode are required.' });
+    if (!barcode) {
+      return res.status(400).json({ error: 'Barcode is required' });
     }
 
-    const row = db.prepare('SELECT * FROM bookings WHERE id = ?').get(id);
-    if (!row) {
-      return res.status(400).json({ success: false, message: `Booking ${id} not found.` });
-    }
+    // Check for duplicate barcode across ALL bookings
+    const { data: existing } = await supabase
+      .from('products_used')
+      .select('booking_id')
+      .eq('barcode', barcode)
+      .maybeSingle();
 
-    const cleanBarcode = barcode.trim().toUpperCase();
-    const existingBarcode = db.prepare('SELECT * FROM barcode_registry WHERE barcode = ?').get(cleanBarcode);
-
-    if (existingBarcode && existingBarcode.bookingId !== id) {
-      const alertId = `ALT-${Math.floor(1000 + Math.random() * 9000)}`;
-      const bookingObj = parseBookingRow(row);
-      
-      db.prepare(`
-        INSERT INTO audit_logs (id, attemptedBarcode, bookingId, mechanicId, mechanicName, originalBookingId, timestamp, status)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      `).run(
-        alertId,
-        cleanBarcode,
-        id,
-        bookingObj.mechanic?.id || 'mech-101',
-        bookingObj.mechanic?.name || 'Mechanic',
-        existingBarcode.bookingId,
-        new Date().toISOString(),
-        'Flagged & Blocked'
-      );
-
+    if (existing && existing.booking_id !== id) {
       return res.status(409).json({
-        success: false,
-        duplicateDetected: true,
-        errorCode: 'DUPLICATE_BARCODE_REUSED',
-        message: `SECURITY ALERT: Barcode "${cleanBarcode}" was ALREADY registered in Booking #${existingBarcode.bookingId}. Duplicate barcode reuse is flagged and prohibited for customer proof verification.`,
-        usageDetails: existingBarcode
+        error: `SECURITY ALERT: Barcode [${barcode}] was already used in booking ${existing.booking_id}. Possible counterfeit product!`
       });
     }
 
-    const bookingObj = parseBookingRow(row);
-    const productRecord = {
-      name,
-      barcode: cleanBarcode,
-      photo: photo || 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=400',
-      timestamp: new Date().toISOString()
-    };
+    if (existing && existing.booking_id === id) {
+      return res.status(409).json({
+        error: `DUPLICATE: Barcode [${barcode}] is already added to this booking.`
+      });
+    }
 
-    const updatedUsedProducts = [...bookingObj.usedProducts, productRecord];
+    // Insert new product
+    await supabase
+      .from('products_used')
+      .insert([{ booking_id: id, name: name || 'Product', barcode }]);
 
-    db.prepare('UPDATE bookings SET usedProducts = ? WHERE id = ?').run(JSON.stringify(updatedUsedProducts), id);
-    db.prepare('INSERT OR IGNORE INTO barcode_registry (barcode, bookingId, mechanicId, timestamp) VALUES (?, ?, ?, ?)').run(
-      cleanBarcode,
-      id,
-      bookingObj.mechanic?.id || 'mech-101',
-      new Date().toISOString()
-    );
+    // Fetch updated products list
+    const { data: products } = await supabase
+      .from('products_used')
+      .select('*')
+      .eq('booking_id', id);
 
-    return res.status(200).json({
-      success: true,
-      message: `Product "${name}" with barcode [${cleanBarcode}] registered in SQLite DB.`,
-      usedProducts: updatedUsedProducts
+    res.json({
+      usedProducts: (products || []).map(p => ({ name: p.name, barcode: p.barcode }))
     });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+  } catch (err) {
+    console.error('addProductUsed error:', err);
+    res.status(500).json({ error: err.message });
   }
 };
 
-// Remove scanned product item & release barcode from SQL
-exports.removeProductUsed = (req, res) => {
+// REMOVE product used (barcode release)
+const removeProductUsed = async (req, res) => {
   try {
     const { id, barcode } = req.params;
 
-    const row = db.prepare('SELECT * FROM bookings WHERE id = ?').get(id);
-    if (!row) {
-      return res.status(404).json({ success: false, message: `Booking ${id} not found.` });
-    }
+    await supabase
+      .from('products_used')
+      .delete()
+      .eq('booking_id', id)
+      .eq('barcode', barcode);
 
-    const cleanBarcode = barcode.trim().toUpperCase();
-    const bookingObj = parseBookingRow(row);
+    const { data: products } = await supabase
+      .from('products_used')
+      .select('*')
+      .eq('booking_id', id);
 
-    const updatedProducts = bookingObj.usedProducts.filter(p => p.barcode !== cleanBarcode);
-
-    db.prepare('UPDATE bookings SET usedProducts = ? WHERE id = ?').run(JSON.stringify(updatedProducts), id);
-    db.prepare('DELETE FROM barcode_registry WHERE barcode = ?').run(cleanBarcode);
-
-    return res.status(200).json({
-      success: true,
-      message: `Product [${cleanBarcode}] removed and barcode released from SQLite DB.`,
-      usedProducts: updatedProducts
+    res.json({
+      usedProducts: (products || []).map(p => ({ name: p.name, barcode: p.barcode }))
     });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+  } catch (err) {
+    console.error('removeProductUsed error:', err);
+    res.status(500).json({ error: err.message });
   }
 };
 
-// Rate booking in SQL
-exports.rateBooking = (req, res) => {
-  try {
-    const { id } = req.params;
-    const { rating, feedback } = req.body;
-
-    const row = db.prepare('SELECT * FROM bookings WHERE id = ?').get(id);
-    if (!row) {
-      return res.status(404).json({ success: false, message: `Booking ${id} not found.` });
-    }
-
-    db.prepare('UPDATE bookings SET rating = ?, feedback = ? WHERE id = ?').run(rating, feedback || '', id);
-    const updatedRow = db.prepare('SELECT * FROM bookings WHERE id = ?').get(id);
-
-    return res.status(200).json({
-      success: true,
-      message: 'Rating saved in SQLite DB!',
-      booking: parseBookingRow(updatedRow)
-    });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
-  }
-};
-
-// Verify OTP & Complete booking in SQL
-exports.verifyOtpAndComplete = (req, res) => {
+// VERIFY OTP and complete booking
+const verifyOtpAndComplete = async (req, res) => {
   try {
     const { id } = req.params;
     const { otp } = req.body;
 
-    const row = db.prepare('SELECT * FROM bookings WHERE id = ?').get(id);
-    if (!row) {
-      return res.status(404).json({ success: false, message: `Booking ${id} not found.` });
+    const { data: booking } = await supabase
+      .from('bookings')
+      .select('otp')
+      .eq('id', id)
+      .single();
+
+    if (!booking || booking.otp !== otp) {
+      return res.status(400).json({ error: 'Invalid OTP. Please try again.' });
     }
 
-    if (row.otp !== otp.toString().trim()) {
-      return res.status(400).json({ success: false, message: 'Invalid OTP entered. Please check the customer phone message.' });
-    }
+    const { data: updated } = await supabase
+      .from('bookings')
+      .update({ status: 'Completed', updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select(`*, products_used (*)`)
+      .single();
 
-    db.prepare('UPDATE bookings SET otpConfirmed = 1, status = "Completed" WHERE id = ?').run(id);
-    const updatedRow = db.prepare('SELECT * FROM bookings WHERE id = ?').get(id);
-
-    return res.status(200).json({
-      success: true,
-      message: 'OTP verified! Service completed & saved in SQLite DB.',
-      booking: parseBookingRow(updatedRow)
+    res.json({
+      booking: {
+        id: updated.id,
+        status: updated.status,
+        usedProducts: (updated.products_used || []).map(p => ({ name: p.name, barcode: p.barcode }))
+      }
     });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+  } catch (err) {
+    console.error('verifyOtpAndComplete error:', err);
+    res.status(500).json({ error: err.message });
   }
 };
 
-// Get Audit Logs from SQL
-exports.getAuditLogs = (req, res) => {
-  try {
-    const logs = db.prepare('SELECT * FROM audit_logs ORDER BY timestamp DESC').all();
-    return res.status(200).json({
-      success: true,
-      count: logs.length,
-      logs
-    });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
-  }
+module.exports = {
+  getMechanicJobs,
+  getAllBookings,
+  createBooking,
+  updateBookingStatus,
+  addProductUsed,
+  removeProductUsed,
+  verifyOtpAndComplete
 };

@@ -1,81 +1,89 @@
-const { verifiedMechanics, bookings } = require('../data/db');
-const db = require('../data/database');
+const supabase = require('../data/database');
 
-exports.getMechanics = (req, res) => {
+// GET all mechanics
+exports.getMechanics = async (req, res) => {
   try {
+    const { data: mechanics, error } = await supabase
+      .from('mechanics')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
     return res.status(200).json({
       success: true,
-      count: verifiedMechanics.length,
-      mechanics: verifiedMechanics
+      count: (mechanics || []).length,
+      mechanics: mechanics || []
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
 
-exports.getMechanicJobs = (req, res) => {
+// GET mechanic jobs
+exports.getMechanicJobs = async (req, res) => {
   try {
     const { id } = req.params;
-    const mechanic = verifiedMechanics.find(m => m.id === id);
-    if (!mechanic) {
-      return res.status(404).json({ success: false, message: `Mechanic ${id} not found.` });
-    }
 
-    const rows = db.prepare('SELECT * FROM bookings ORDER BY createdAt DESC').all();
-    const parsedJobs = rows.map(r => ({
-      ...r,
-      vehicle: JSON.parse(r.vehicle || '{}'),
-      package: JSON.parse(r.package || '{}'),
-      oilOption: JSON.parse(r.oilOption || '{}'),
-      pricing: JSON.parse(r.pricing || '{}'),
-      locationCoords: JSON.parse(r.locationCoords || '{}'),
-      mechanic: JSON.parse(r.mechanic || '{}'),
-      beforePhotos: JSON.parse(r.beforePhotos || '[]'),
-      inspectionDetails: JSON.parse(r.inspectionDetails || '{}'),
-      usedProducts: JSON.parse(r.usedProducts || '[]'),
-      checklist: JSON.parse(r.checklist || '[]'),
-      afterPhotos: JSON.parse(r.afterPhotos || '[]'),
-      otpConfirmed: Boolean(r.otpConfirmed)
+    const { data: bookings, error } = await supabase
+      .from('bookings')
+      .select(`*, products_used (*)`)
+      .eq('mechanic_id', id)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    const jobs = (bookings || []).map(b => ({
+      id: b.id,
+      customerName: b.customer_name,
+      customerPhone: b.customer_phone,
+      vehicle: {
+        make: b.vehicle_make,
+        model: b.vehicle_model,
+        year: b.vehicle_year,
+        reg: b.vehicle_reg
+      },
+      address: b.address,
+      serviceType: b.service_type,
+      status: b.status,
+      totalPrice: b.total_price,
+      inspectionDetails: b.inspection_details || {},
+      usedProducts: (b.products_used || []).map(p => ({ name: p.name, barcode: p.barcode }))
     }));
-
-    const assignedJobs = parsedJobs.filter(b => b.mechanic && b.mechanic.id === id);
 
     return res.status(200).json({
       success: true,
-      mechanic,
-      count: assignedJobs.length,
-      jobs: assignedJobs
+      count: jobs.length,
+      jobs
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// Update Mechanic Live GPS Coordinates (Real Device Geolocation)
-exports.updateMechanicLocation = (req, res) => {
+// UPDATE Mechanic Live GPS Location
+exports.updateMechanicLocation = async (req, res) => {
   try {
     const { id } = req.params;
     const { lat, lng, speed, accuracy } = req.body;
 
-    const mechanic = verifiedMechanics.find(m => m.id === id);
-    if (!mechanic) {
-      return res.status(404).json({ success: false, message: `Mechanic ${id} not found.` });
-    }
+    const { error } = await supabase
+      .from('mechanics')
+      .upsert({
+        id,
+        lat,
+        lng,
+        speed: speed || 0,
+        accuracy: accuracy || 10,
+        last_location_update: new Date().toISOString()
+      }, { onConflict: 'id' });
 
-    mechanic.currentLat = lat;
-    mechanic.currentLng = lng;
-    mechanic.lastGpsUpdate = new Date().toISOString();
-    mechanic.gpsSpeed = speed || 0;
-    mechanic.gpsAccuracy = accuracy || 10;
+    if (error) throw error;
 
     return res.status(200).json({
       success: true,
-      message: `Mechanic ${mechanic.name} live GPS location updated!`,
-      location: {
-        lat: mechanic.currentLat,
-        lng: mechanic.currentLng,
-        lastGpsUpdate: mechanic.lastGpsUpdate
-      }
+      message: `Mechanic ${id} GPS location updated!`,
+      location: { lat, lng }
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
