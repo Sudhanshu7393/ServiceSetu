@@ -1,5 +1,6 @@
 const supabase = require('../data/database');
 
+
 // GET all bookings for a mechanic
 const getMechanicJobs = async (req, res) => {
   try {
@@ -284,6 +285,71 @@ const verifyOtpAndComplete = async (req, res) => {
   }
 };
 
+// GET all bookings (alias for routes)
+const getBookings = getAllBookings;
+
+// GET single booking by ID
+const getBookingById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { data, error } = await supabase
+      .from('bookings')
+      .select(`*, products_used (*)`)
+      .eq('id', id)
+      .single();
+
+    if (error) throw error;
+    if (!data) return res.status(404).json({ error: 'Booking not found' });
+
+    res.json({
+      booking: {
+        id: data.id,
+        customerName: data.customer_name,
+        customerPhone: data.customer_phone,
+        vehicle: { make: data.vehicle_make, model: data.vehicle_model, year: data.vehicle_year, reg: data.vehicle_reg },
+        address: data.address,
+        serviceType: data.service_type,
+        status: data.status,
+        totalPrice: data.total_price,
+        paymentStatus: data.payment_status,
+        otp: data.otp,
+        inspectionDetails: data.inspection_details || {},
+        usedProducts: (data.products_used || []).map(p => ({ name: p.name, barcode: p.barcode }))
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// RATE a booking
+const rateBooking = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { rating, review } = req.body;
+    await supabase.from('bookings').update({ rating, review, updated_at: new Date().toISOString() }).eq('id', id);
+    res.json({ success: true, message: 'Rating submitted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// GET audit logs (all product scans)
+const getAuditLogs = async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('products_used')
+      .select('*, bookings(customer_name, vehicle_make, vehicle_model)')
+      .order('created_at', { ascending: false })
+      .limit(100);
+
+    if (error) throw error;
+    res.json({ auditLogs: data || [] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 module.exports = {
   getMechanicJobs,
   getAllBookings,
@@ -291,5 +357,9 @@ module.exports = {
   updateBookingStatus,
   addProductUsed,
   removeProductUsed,
-  verifyOtpAndComplete
+  verifyOtpAndComplete,
+  getBookings,
+  getBookingById,
+  rateBooking,
+  getAuditLogs
 };
