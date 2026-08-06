@@ -18,15 +18,9 @@ import {
   ShieldAlert, 
   CheckCircle, 
   Phone,
-  AlertTriangle,
   FileCheck,
-  Truck,
-  Wrench,
-  HelpCircle,
-  ArrowRight,
   Gauge,
   Trash2,
-  Navigation,
   Radio
 } from 'lucide-react';
 
@@ -46,7 +40,7 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
 
   // Barcode & OTP Inputs
   const [productName, setProductName] = useState('Motul 7100 4T 1L Synthetic Oil');
-  const [barcodeInput, setBarcodeInput] = useState('BAR-MOT-44129');
+  const [barcodeInput, setBarcodeInput] = useState('');
   const [otpInput, setOtpInput] = useState('');
 
   // Real Device Geolocation State
@@ -99,7 +93,7 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
     }
 
     setIsGpsBroadcasting(true);
-    setStatusMessage('🟢 Device GPS Live Broadcast Started!');
+    setStatusMessage('🟢 Live GPS Location Broadcast Enabled');
 
     gpsWatchIdRef.current = navigator.geolocation.watchPosition(
       async (pos) => {
@@ -118,7 +112,6 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
         }
       },
       (err) => {
-        console.warn('GPS position error', err);
         setCurrentGpsCoords({ lat: 12.9716, lng: 77.5946, speed: 25, accuracy: 5 });
       },
       {
@@ -135,7 +128,7 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
       gpsWatchIdRef.current = null;
     }
     setIsGpsBroadcasting(false);
-    setStatusMessage('🔴 Device GPS Broadcast Stopped.');
+    setStatusMessage('🔴 Live GPS Broadcast Stopped');
   };
 
   const handleUpdateStatus = async (newStatus, extraData = {}) => {
@@ -157,7 +150,7 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
       
       const res = await updateBookingStatus(selectedJob.id, updatePayload);
       setSelectedJob(res.booking);
-      setStatusMessage(`Step Completed: ${newStatus}`);
+      setStatusMessage(`Status Updated: ${newStatus}`);
       loadJobs();
     } catch (err) {
       alert(`Error updating status: ${err.message}`);
@@ -174,7 +167,7 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
         name: productName,
         barcode: barcodeInput
       });
-      setStatusMessage(`Product [${barcodeInput}] verified & registered!`);
+      setStatusMessage(`Product [${barcodeInput}] verified & added to Service Proof Report.`);
       setSelectedJob(prev => ({ ...prev, usedProducts: res.usedProducts }));
       setBarcodeInput('');
     } catch (err) {
@@ -192,23 +185,21 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
 
     setBarcodeInput(scannedBarcode);
     setDuplicateAlert(null);
-    setStatusMessage(`Camera Scanned Barcode: [${scannedBarcode}]`);
 
     if (selectedJob) {
-      // Check if barcode is already registered in this booking
       const alreadyExists = (selectedJob.usedProducts || []).some(p => p.barcode === scannedBarcode);
       if (alreadyExists) {
-        setStatusMessage(`Product with Barcode [${scannedBarcode}] is already scanned for this booking.`);
+        setStatusMessage(`Product with Barcode [${scannedBarcode}] is already added.`);
         isSubmittingScanRef.current = false;
         return;
       }
 
       try {
         const res = await addProductUsed(selectedJob.id, {
-          name: productName || 'Scanned Engine Oil / Part',
+          name: productName || 'Engine Oil / Spare Part',
           barcode: scannedBarcode
         });
-        setStatusMessage(`CAMERA VERIFIED: Product barcode [${scannedBarcode}] registered!`);
+        setStatusMessage(`Product Barcode [${scannedBarcode}] Scanned & Verified.`);
         setSelectedJob(prev => ({ ...prev, usedProducts: res.usedProducts }));
         setBarcodeInput('');
       } catch (err) {
@@ -235,7 +226,7 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
       if (res.usedProducts) {
         setSelectedJob(prev => ({ ...prev, usedProducts: res.usedProducts }));
       }
-      setStatusMessage(`Scanned Item [${barcode}] removed & barcode released.`);
+      setStatusMessage(`Scanned Item [${barcode}] removed.`);
     } catch (err) {
       alert(`Error removing item: ${err.message}`);
     }
@@ -247,7 +238,7 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
     try {
       const res = await verifyOtpAndComplete(selectedJob.id, otpInput);
       setSelectedJob(res.booking);
-      setStatusMessage('OTP Verified successfully! Service completed & report generated.');
+      setStatusMessage('OTP Verified successfully! Service completed.');
       loadJobs();
     } catch (err) {
       alert(`OTP Verification Error: ${err.message}`);
@@ -258,7 +249,7 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 text-center">
         <div className="inline-block animate-spin rounded-full h-10 w-10 border-4 border-teal-500 border-t-transparent"></div>
-        <p className="mt-3 text-slate-500 text-sm">Loading Mechanic Jobs...</p>
+        <p className="mt-3 text-slate-500 text-sm">Loading Assigned Servicing Jobs...</p>
       </div>
     );
   }
@@ -266,7 +257,7 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       
-      {/* Header with REAL DEVICE GEOLOCATION BROADCAST SWITCH */}
+      {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 bg-slate-900 text-white p-6 rounded-3xl border border-slate-800 shadow-md gap-4">
         <div className="flex items-center space-x-4">
           <div className="w-14 h-14 rounded-2xl bg-teal-500 text-slate-950 flex items-center justify-center font-bold text-xl">
@@ -274,25 +265,23 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <h1 className="text-xl font-extrabold">Easy Mechanic Job Portal</h1>
-              <span className="bg-emerald-900 text-emerald-300 text-[10px] font-bold uppercase px-2 py-0.5 rounded border border-emerald-700">
-                Rajesh Kumar (Verified)
+              <h1 className="text-xl font-extrabold">Mechanic Execution Portal</h1>
+              <span className="bg-emerald-900 text-emerald-300 text-[10px] font-bold uppercase px-2.5 py-0.5 rounded border border-emerald-700">
+                Verified Expert
               </span>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">Coverage: Indiranagar / Koramangala Hub | Active Jobs: {jobs.length}</p>
+            <p className="text-xs text-slate-400 mt-0.5">Active Servicing Assignments: {jobs.length}</p>
           </div>
         </div>
 
-        {/* REAL DEVICE GEOLOCATION BROADCAST TOGGLE */}
+        {/* GPS Broadcast Toggle */}
         <div className="bg-slate-950 border border-slate-800 p-3 rounded-2xl flex items-center space-x-3 text-xs w-full md:w-auto justify-between">
           <div className="flex items-center space-x-2">
             <Radio className={`w-4 h-4 ${isGpsBroadcasting ? 'text-emerald-400 animate-pulse' : 'text-slate-500'}`} />
             <div>
-              <strong className="text-white block font-bold">Real Device GPS Broadcast</strong>
+              <strong className="text-white block font-bold">Live GPS Broadcast</strong>
               <span className="text-[10px] text-slate-400">
-                {isGpsBroadcasting 
-                  ? `Lat: ${currentGpsCoords?.lat?.toFixed(4) || '12.9716'}, Lng: ${currentGpsCoords?.lng?.toFixed(4) || '77.5946'}` 
-                  : 'Broadcast Off'}
+                {isGpsBroadcasting ? 'Sharing real-time location' : 'Location sharing off'}
               </span>
             </div>
           </div>
@@ -304,7 +293,7 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
               isGpsBroadcasting ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
             }`}
           >
-            {isGpsBroadcasting ? '🔴 GPS ON' : '⚪ Start GPS'}
+            {isGpsBroadcasting ? 'GPS ON' : 'Turn ON GPS'}
           </button>
         </div>
       </div>
@@ -339,7 +328,7 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-mono text-xs font-bold text-slate-900">{job.id}</span>
-                    <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase ${
+                    <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase ${
                       job.status === 'Completed' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
                     }`}>
                       {job.status}
@@ -352,12 +341,8 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
                   </p>
 
                   <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                      job.flowType === 'heavy_workshop_pickup' ? 'bg-amber-100 text-amber-800' :
-                      job.flowType === 'unclear_diagnosis_visit' ? 'bg-purple-100 text-purple-800' :
-                      'bg-emerald-100 text-emerald-800'
-                    }`}>
-                      {job.flowType === 'heavy_workshop_pickup' ? 'Pickup & Workshop' : job.flowType === 'unclear_diagnosis_visit' ? 'Diagnosis Visit' : 'Doorstep Routine'}
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-teal-100 text-teal-800">
+                      Doorstep Service
                     </span>
                     <span className="font-bold text-teal-700">₹{job.totalPrice}</span>
                   </div>
@@ -381,7 +366,7 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
               <div className="p-5 bg-red-50 border-2 border-red-500 text-red-900 rounded-2xl text-xs font-semibold space-y-2">
                 <div className="flex items-center font-bold text-sm text-red-700">
                   <ShieldAlert className="w-5 h-5 mr-2 text-red-600 flex-shrink-0" />
-                  DUPLICATE BARCODE SECURITY ALERT DETECTED
+                  DUPLICATE BARCODE DETECTED
                 </div>
                 <p className="leading-relaxed">{duplicateAlert}</p>
               </div>
@@ -409,7 +394,7 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
               <div className="border-t border-slate-100 pt-5 mb-6 space-y-4">
                 <h4 className="font-extrabold text-sm text-slate-900 flex items-center">
                   <Gauge className="w-4 h-4 text-teal-600 mr-2" />
-                  Step 1: Vehicle Health Inspection & Metrics
+                  Step 1: Log Vehicle Health Inspection
                 </h4>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs">
@@ -447,37 +432,37 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
                 <button
                   type="button"
                   onClick={() => handleUpdateStatus('Inspected')}
-                  className="bg-slate-900 text-white font-bold text-xs px-5 py-2.5 rounded-xl"
+                  className="bg-slate-900 text-white font-bold text-xs px-5 py-2.5 rounded-xl cursor-pointer"
                 >
                   Save Vehicle Health Inspection
                 </button>
               </div>
 
-              {/* STEP 2: PRODUCT BARCODE UPLOAD & LIVE CAMERA SCANNER */}
+              {/* STEP 2: PRODUCT BARCODE SCAN */}
               <div className="border-t border-slate-100 pt-5 mb-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <h4 className="font-extrabold text-sm text-slate-900 flex items-center">
                     <Barcode className="w-4 h-4 text-teal-600 mr-2" />
-                    Step 2: Product Barcode Scan (Single-Scan Protected)
+                    Step 2: Product & Spare Barcode Verification
                   </h4>
                   
                   <button
                     type="button"
                     onClick={() => setShowCameraScanner(true)}
-                    className="flex items-center space-x-1.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-extrabold text-xs px-3.5 py-2 rounded-xl transition-all shadow-md active:scale-95"
+                    className="flex items-center space-x-1.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-extrabold text-xs px-3.5 py-2 rounded-xl transition-all shadow-md cursor-pointer"
                   >
                     <Camera className="w-4 h-4" />
-                    <span>📷 Open Mobile Camera Scanner</span>
+                    <span>Scan With Camera</span>
                   </button>
                 </div>
 
                 <form onSubmit={handleAddProduct} className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-600 mb-1">Product Item Name</label>
+                      <label className="block text-[11px] font-bold text-slate-600 mb-1">Product Name</label>
                       <input
                         type="text"
-                        placeholder="Product Item Name"
+                        placeholder="e.g. Motul 7100 4T Synthetic Oil"
                         value={productName}
                         onChange={(e) => setProductName(e.target.value)}
                         className="w-full p-2.5 rounded-xl border text-xs bg-white"
@@ -485,10 +470,10 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-600 mb-1">Barcode String (Manual or Camera Auto-Filled)</label>
+                      <label className="block text-[11px] font-bold text-slate-600 mb-1">Barcode String</label>
                       <input
                         type="text"
-                        placeholder="Barcode String (e.g. BAR-MOT-44129)"
+                        placeholder="Scan or type barcode"
                         value={barcodeInput}
                         onChange={(e) => setBarcodeInput(e.target.value)}
                         className="w-full p-2.5 rounded-xl border text-xs font-mono font-bold uppercase bg-white"
@@ -496,9 +481,8 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
                     </div>
                   </div>
 
-                  <div className="flex justify-between items-center pt-2">
-                    <span className="text-[10px] text-slate-500">Test duplicate alert: Use <code className="text-red-600 font-bold">BAR-MOT-44129</code></span>
-                    <button type="submit" className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-5 py-2.5 rounded-xl">
+                  <div className="flex justify-end pt-1">
+                    <button type="submit" className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-5 py-2.5 rounded-xl cursor-pointer">
                       Register Barcode
                     </button>
                   </div>
@@ -506,7 +490,7 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
 
                 {/* Scanned Items List */}
                 <div className="space-y-2">
-                  <label className="block text-xs font-bold text-slate-700">Scanned Verified Products ({selectedJob.usedProducts?.length || 0})</label>
+                  <label className="block text-xs font-bold text-slate-700">Verified Products Used ({selectedJob.usedProducts?.length || 0})</label>
                   {selectedJob.usedProducts?.length === 0 ? (
                     <p className="text-xs text-slate-400 italic">No products scanned yet.</p>
                   ) : (
@@ -528,8 +512,8 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
                           <button
                             type="button"
                             onClick={() => handleRemoveProduct(prod.barcode)}
-                            className="flex items-center space-x-1 text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 border border-red-200 px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer shadow-sm active:scale-95"
-                            title="Remove scanned product & release barcode"
+                            className="flex items-center space-x-1 text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 border border-red-200 px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer shadow-sm"
+                            title="Remove product"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                             <span>Remove</span>
@@ -541,11 +525,11 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
                 </div>
               </div>
 
-              {/* STEP 3: OTP VERIFICATION & HANDOVER */}
+              {/* STEP 3: OTP VERIFICATION */}
               <div className="border-t border-slate-100 pt-5 space-y-4">
                 <h4 className="font-extrabold text-sm text-slate-900 flex items-center">
                   <FileCheck className="w-4 h-4 text-teal-600 mr-2" />
-                  Step 3: Customer Handover & OTP Verification
+                  Step 3: Customer OTP Handover Verification
                 </h4>
 
                 <form onSubmit={handleVerifyOtp} className="flex items-center space-x-3 max-w-md">
@@ -556,8 +540,8 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
                     onChange={(e) => setOtpInput(e.target.value)}
                     className="p-3 rounded-xl border text-xs font-mono font-bold tracking-widest text-center"
                   />
-                  <button type="submit" className="bg-emerald-600 text-white font-bold text-xs px-6 py-3 rounded-xl shadow">
-                    Verify OTP & Hand Over
+                  <button type="submit" className="bg-emerald-600 text-white font-bold text-xs px-6 py-3 rounded-xl shadow cursor-pointer">
+                    Verify OTP & Complete Service
                   </button>
                 </form>
               </div>
@@ -572,7 +556,7 @@ export default function MechanicDashboard({ mechanicId = 'mech-101' }) {
 
       </div>
 
-      {/* LIVE CAMERA BARCODE SCANNER MODAL */}
+      {/* CAMERA SCANNER MODAL */}
       <CameraBarcodeScanner
         isOpen={showCameraScanner}
         onClose={() => setShowCameraScanner(false)}

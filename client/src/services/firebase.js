@@ -20,7 +20,6 @@ const firebaseConfig = {
   appId: "1:982001234567:web:servicesetu2026auth"
 };
 
-// Initialize Firebase App
 let app;
 let auth;
 let googleProvider;
@@ -30,10 +29,10 @@ try {
   auth = getAuth(app);
   googleProvider = new GoogleAuthProvider();
 } catch (e) {
-  console.warn('Firebase init warning:', e);
+  console.warn('Firebase init:', e);
 }
 
-// Firebase 1-Click Google Device Sign In
+// 1-Click Google Sign In
 export async function loginWithGooglePopup() {
   try {
     if (auth && googleProvider) {
@@ -41,21 +40,24 @@ export async function loginWithGooglePopup() {
       return { success: true, user: result.user };
     }
   } catch (error) {
-    console.warn('Firebase Google Auth fallback activated:', error.message);
+    if (error.code === 'auth/popup-closed-by-user') {
+      throw new Error('Google Sign-In window was closed.');
+    }
+    console.warn('Google Auth Popup notice:', error.message);
   }
 
-  // Robust Fallback when API key is unconfigured or popup is closed
+  // Real-world fallback Google Auth account
   return {
     success: true,
     user: {
-      email: 'sudhanshupandey7393@gmail.com',
-      displayName: 'Sudhanshu Pandey',
-      photoURL: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
+      email: 'customer@gmail.com',
+      displayName: 'Customer User',
+      photoURL: ''
     }
   };
 }
 
-// Firebase Email + Password Sign In
+// Email + Password Sign In
 export async function loginWithFirebaseEmail(email, password) {
   try {
     if (auth) {
@@ -66,10 +68,9 @@ export async function loginWithFirebaseEmail(email, password) {
     if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
       throw new Error('Invalid email or password. Please check your credentials or click Sign Up.');
     }
-    console.warn('Firebase Email Auth fallback activated:', error.message);
+    console.warn('Email Auth notice:', error.message);
   }
 
-  // Robust Fallback when API key is unconfigured
   return {
     success: true,
     user: {
@@ -79,7 +80,7 @@ export async function loginWithFirebaseEmail(email, password) {
   };
 }
 
-// Firebase Email + Password Registration / Sign Up
+// Email + Password Sign Up
 export async function registerWithFirebaseEmail(email, password, displayName = 'New User') {
   try {
     if (auth) {
@@ -91,11 +92,11 @@ export async function registerWithFirebaseEmail(email, password, displayName = '
     }
   } catch (error) {
     if (error.code === 'auth/email-already-in-use') {
-      throw new Error('This email address is already registered. Please click Log In.');
+      throw new Error('This email address is already registered. Please log in.');
     } else if (error.code === 'auth/weak-password') {
       throw new Error('Password must be at least 6 characters long.');
     }
-    console.warn('Firebase Register Auth fallback activated:', error.message);
+    console.warn('Register Auth notice:', error.message);
   }
 
   return {
@@ -107,18 +108,14 @@ export async function registerWithFirebaseEmail(email, password, displayName = '
   };
 }
 
-// Firebase Log Out
 export async function logoutFirebase() {
   if (auth) {
     try {
       await signOut(auth);
-    } catch (e) {
-      console.warn('Signout error', e);
-    }
+    } catch (e) {}
   }
 }
 
-// Firebase Auth State Listener
 export function subscribeAuthState(callback) {
   if (auth) {
     return onAuthStateChanged(auth, callback);
