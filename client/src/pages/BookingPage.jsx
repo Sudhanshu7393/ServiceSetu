@@ -30,12 +30,13 @@ import {
   BadgeCheck,
   RefreshCcw,
   Zap,
-  ChevronLeft,
-  ChevronRight,
+  Gauge,
+  Sliders,
   Shield,
   Star,
   Wrench,
-  Fuel
+  Fuel,
+  Cpu
 } from 'lucide-react';
 
 export default function BookingPage({ onBookingCreated }) {
@@ -47,6 +48,9 @@ export default function BookingPage({ onBookingCreated }) {
   const [vehiclesData, setVehiclesData] = useState([]);
   const [packagesData, setPackagesData] = useState([]);
   const [oilOptionsData, setOilOptionsData] = useState([]);
+
+  // Active Category Toggle in Showcase
+  const [packageFilter, setPackageFilter] = useState('popular'); // 'popular' or 'recent'
 
   // Vehicle Search & Custom Entry
   const [searchQuery, setSearchQuery] = useState('');
@@ -79,41 +83,90 @@ export default function BookingPage({ onBookingCreated }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [createdBooking, setCreatedBooking] = useState(null);
 
-  // Services Carousel Scroll
-  const [activeServiceIdx, setActiveServiceIdx] = useState(0);
-
-  const showcaseServices = [
+  // 4 Core Doorstep Services matching Reference Image 1 (MotoFix Garage)
+  const ourServicesList = [
     {
-      id: 'srv-1',
+      id: 'general',
       title: 'General Bike Service',
       desc: 'Routine maintenance with oil change & inspection.',
-      tag: 'Doorstep Special',
-      image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=600&auto=format&fit=crop&q=80',
-      targetPkgId: 'pkg-standard'
+      image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=600&auto=format&fit=crop&q=80'
     },
     {
-      id: 'srv-2',
+      id: 'tuneup',
       title: 'Engine Tune-Up',
       desc: 'Improve bike performance, mileage & smoothness.',
-      tag: 'Performance',
-      image: 'https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=600&auto=format&fit=crop&q=80',
-      targetPkgId: 'pkg-performance'
+      image: 'https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=600&auto=format&fit=crop&q=80'
     },
     {
-      id: 'srv-3',
+      id: 'washing',
       title: 'Bike Washing & Detailing',
       desc: 'Shine & protect with premium foam wash + polish.',
-      tag: 'Shine & Spa',
-      image: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&auto=format&fit=crop&q=80',
-      targetPkgId: 'pkg-standard'
+      image: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=600&auto=format&fit=crop&q=80'
     },
     {
-      id: 'srv-4',
+      id: 'brake',
       title: 'Brake & Clutch Repair',
       desc: 'Smooth and responsive control on every ride.',
-      tag: 'Safety Check',
+      image: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?w=600&auto=format&fit=crop&q=80'
+    }
+  ];
+
+  // Reference UI Signature Package Models
+  const signatureModels = [
+    {
+      id: 'pkg-standard',
+      name: 'STORM GT-R',
+      subtitle: 'Complete General Service',
+      engine: '110cc - 200cc',
+      speed: '32-Pt Check',
+      power: 'Motul 7100',
+      price: '₹799',
+      image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=600&auto=format&fit=crop&q=80',
+      desc: 'Engine oil flush, spark plug clean, air filter service, brake tuning & foam wash.'
+    },
+    {
+      id: 'pkg-performance',
+      name: 'PHANTOM X',
+      subtitle: 'Comprehensive Pro Tune',
+      engine: '200cc - 500cc',
+      speed: '48-Pt Dyno',
+      power: 'Castrol Edge',
+      price: '₹1,299',
       image: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=600&auto=format&fit=crop&q=80',
-      targetPkgId: 'pkg-heavy'
+      desc: 'Full throttle body clean, valve clearance adjustment, brake fluid flush & drivetrain lube.'
+    },
+    {
+      id: 'pkg-heavy',
+      name: 'VIPER RS',
+      subtitle: 'Workshop Restoration & Spa',
+      engine: 'All CC / Heavy',
+      speed: 'Full Overhaul',
+      power: 'Synthetic Oil',
+      price: '₹2,199',
+      image: 'https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=600&auto=format&fit=crop&q=80',
+      desc: 'Pickup & drop, complete clutch overhaul, chain sprocket replacement, deep detailing.'
+    }
+  ];
+
+  // Rider Reviews matching Reference Section
+  const riderReviews = [
+    {
+      quote: "The Storm GT-R service exceeded all my expectations. The mechanic scanned the Motul oil barcode in front of me and WhatsApped the full video proof. Mind-blowing!",
+      author: "Alex Thompson",
+      city: "Koramangala, Bengaluru",
+      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+    },
+    {
+      quote: "The best blend of technology and craftsmanship. The live GPS tracking and digital health report card gives total peace of mind for my Continental GT 650.",
+      author: "Sarah Chen",
+      city: "Indiranagar, Bengaluru",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80"
+    },
+    {
+      quote: "Best two-wheeler service I've ever used. Fixed upfront price, zero upselling, and a genuine 7-day guarantee. Never visiting local corner shops again.",
+      author: "Marcus Rodriguez",
+      city: "HSR Layout, Bengaluru",
+      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80"
     }
   ];
 
@@ -217,9 +270,9 @@ export default function BookingPage({ onBookingCreated }) {
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleSelectServiceCard = (srv) => {
+  const handleSelectSignaturePackage = (model) => {
     if (packagesData.length > 0) {
-      const match = packagesData.find(p => p.id === srv.targetPkgId) || packagesData[0];
+      const match = packagesData.find(p => p.id === model.id) || packagesData[0];
       setSelectedPkg(match);
     }
     scrollToBooking();
@@ -227,9 +280,11 @@ export default function BookingPage({ onBookingCreated }) {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-28 text-center bg-[#0b0c10]">
-        <div className="inline-block animate-spin rounded-full h-14 w-14 border-4 border-amber-500 border-t-transparent shadow-lg shadow-amber-500/20"></div>
-        <p className="mt-5 text-slate-300 font-bold text-sm tracking-wide">Initializing ServiceSetu Garage System...</p>
+      <div className="min-h-screen bg-[#060709] flex items-center justify-center text-center py-28">
+        <div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-orange-500 border-t-transparent shadow-lg shadow-orange-500/20"></div>
+          <p className="mt-4 text-slate-400 font-bold text-xs uppercase tracking-widest">Powering Up ServiceSetu...</p>
+        </div>
       </div>
     );
   }
@@ -238,182 +293,134 @@ export default function BookingPage({ onBookingCreated }) {
     return (
       <div className="max-w-xl mx-auto my-16 p-8 bg-red-950/40 border border-red-500/40 rounded-3xl text-center">
         <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-3" />
-        <h3 className="text-xl font-black text-white">Backend Connection Error</h3>
+        <h3 className="text-xl font-black text-white">Connection Error</h3>
         <p className="text-sm text-red-300 mt-2">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0b0c10] text-slate-100 selection:bg-amber-500 selection:text-slate-950">
+    <div className="min-h-screen bg-[#060709] text-slate-100 selection:bg-orange-500 selection:text-slate-950">
       
       {/* ========================================================================= */}
-      {/* 1. HERO SECTION - EXACT REPLICA OF THE REFERENCE IMAGE DESIGN             */}
+      {/* 1. HERO SECTION - EXACT REPLICA OF THE REFERENCE IMAGE (MOTO DESIGN)      */}
       {/* ========================================================================= */}
-      <section className="relative overflow-hidden pt-6 pb-16 lg:py-16 border-b border-white/5 bg-[#0b0c10]">
+      <section className="relative overflow-hidden pt-12 pb-24 text-center bg-[#060709]">
         
-        {/* Large Bold Geometric Speed Chevron Slashes (Right Side of Reference) */}
-        <div className="absolute right-0 top-0 w-1/2 h-full pointer-events-none hidden lg:block overflow-hidden">
-          <svg className="w-full h-full opacity-35" viewBox="0 0 700 600" fill="none" preserveAspectRatio="none">
-            <polygon points="350,0 700,0 520,600 170,600" fill="#1b1d24" />
-            <polygon points="460,0 700,0 590,600 350,600" fill="#22252e" />
-            <polygon points="580,0 700,0 660,600 540,600" fill="#2d303b" />
-          </svg>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-6">
+          
+          {/* Main Dramatic Headline */}
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.08]">
+            This is What the <br className="hidden sm:inline" />
+            <span className="text-copper-glow">Future Sounds</span> Like.
+          </h1>
+
+          {/* Clean Subtitle */}
+          <p className="text-slate-400 text-sm sm:text-base max-w-xl mx-auto font-normal tracking-wide">
+            Unleash power, style, and innovation in one machine.
+          </p>
+
+          {/* Centered Dual Pill Buttons */}
+          <div className="pt-2 flex items-center justify-center gap-4 flex-wrap">
+            <button
+              onClick={scrollToBooking}
+              className="btn-copper-pill px-8 py-3.5 rounded-full text-xs font-black tracking-wide cursor-pointer"
+            >
+              Explore Models
+            </button>
+            <button
+              onClick={() => {
+                const el = document.getElementById('signature-packages-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="btn-glass-pill px-8 py-3.5 rounded-full text-xs font-bold tracking-wide cursor-pointer"
+            >
+              Learn More
+            </button>
+          </div>
+
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            
-            {/* LEFT COLUMN: THE ICONIC TALL GOLDEN ARCH & SEAMLESS CUTOUT MOTORCYCLE */}
-            <div className="lg:col-span-5 flex justify-center items-end relative min-h-[380px] sm:min-h-[440px]">
-              
-              {/* The Signature Tall Golden/Amber Arch from Reference */}
-              <div className="w-[280px] sm:w-[340px] h-[360px] sm:h-[430px] rounded-t-full border-[14px] border-[#e58a13] shadow-[0_0_60px_rgba(229,138,19,0.35)] relative flex items-center justify-center">
-                {/* Subtle soft ambient halo inside arch */}
-                <div className="w-48 h-48 rounded-full bg-amber-500/10 blur-3xl pointer-events-none" />
-              </div>
+        {/* Centerstage Hero Motorcycle with Cinematic Horizontal Horizon Light Beam */}
+        <div className="relative mt-8 max-w-4xl mx-auto px-4 flex flex-col items-center">
+          
+          {/* Horizontal Ambient Horizon Light Glow (Exact from Reference) */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-36 horizon-glow-line pointer-events-none" />
+          
+          {/* Subtle Warm Horizon Floor Line */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[1px] bg-gradient-to-r from-transparent via-orange-500/40 to-transparent pointer-events-none" />
 
-              {/* The Seamless Cutout Motorcycle - Grounded directly in front with ZERO background box! */}
-              <div className="absolute -bottom-2 -left-4 sm:-left-8 w-[340px] sm:w-[440px] lg:w-[480px] pointer-events-none transition-transform hover:scale-105 duration-500 drop-shadow-[0_25px_30px_rgba(0,0,0,0.95)]">
-                <img 
-                  src="/images/hero-bike.png" 
-                  alt="Performance Custom Motorcycle" 
-                  className="w-full h-auto object-contain"
-                  onError={(e) => {
-                    // Fallback to alt transparent bike if primary fails
-                    e.target.src = "/images/hero-bike-alt.png";
-                  }}
-                />
-              </div>
-
-            </div>
-
-            {/* RIGHT COLUMN: HEADLINE, DESCRIPTION & BUTTONS */}
-            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-              
-              {/* Exact High-Impact Headline from Reference */}
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1]">
-                <span className="text-[#e58a13] block">
-                  Best Bike Repair
-                </span>
-                <span className="text-[#e58a13] block">
-                  & Maintenance Services
-                </span>
-              </h1>
-
-              {/* Exact Subtext from Reference */}
-              <p className="text-slate-300 text-sm sm:text-base max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
-                Professional two-wheeler servicing, repairs, detailing & performance upgrades. Trusted by riders for precision and care.
-              </p>
-
-              {/* Action Buttons exactly matching Reference Design */}
-              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                <button
-                  onClick={scrollToBooking}
-                  className="w-full sm:w-auto px-8 py-3.5 rounded-full text-base font-extrabold bg-[#e58a13] hover:bg-[#d97706] text-slate-950 transition-all shadow-lg shadow-amber-500/30 flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <span>Book Service</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    const el = document.getElementById('services-section');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="w-full sm:w-auto px-8 py-3.5 rounded-full text-base font-bold text-white border border-white/60 hover:border-[#e58a13] hover:text-[#e58a13] transition-all bg-transparent cursor-pointer"
-                >
-                  <span>View All Services</span>
-                </button>
-              </div>
-
-              {/* Live Metric Badges */}
-              <div className="pt-6 border-t border-white/10 grid grid-cols-3 gap-4 max-w-lg mx-auto lg:mx-0 text-left">
-                <div>
-                  <strong className="text-white text-lg font-black block">250+</strong>
-                  <span className="text-slate-400 text-xs">Bike Models</span>
-                </div>
-                <div>
-                  <strong className="text-[#e58a13] text-lg font-black block">100%</strong>
-                  <span className="text-slate-400 text-xs">Barcode Genuine</span>
-                </div>
-                <div>
-                  <strong className="text-emerald-400 text-lg font-black block">7-Day</strong>
-                  <span className="text-slate-400 text-xs">Free Redo Warranty</span>
-                </div>
-              </div>
-
-            </div>
-
+          {/* The Hero Motorcycle */}
+          <div className="relative z-10 w-full max-w-2xl transition-transform hover:scale-105 duration-700 drop-shadow-[0_30px_35px_rgba(0,0,0,0.95)]">
+            <img 
+              src="/images/hero-bike.png" 
+              alt="Custom Performance Machine" 
+              className="w-full h-auto object-contain mx-auto"
+              onError={(e) => {
+                e.target.src = "/images/hero-bike-alt.png";
+              }}
+            />
           </div>
+
         </div>
 
       </section>
 
       {/* ========================================================================= */}
-      {/* 2. "OUR SERVICES" CAROUSEL ROW - MATCHING BOTTOM HALF OF REFERENCE         */}
+      {/* 2. OUR SERVICES (Exact 4 Cards Grid from Reference Image 1)               */}
       {/* ========================================================================= */}
-      <section id="services-section" className="py-14 bg-[#14161d] border-b border-white/5">
+      <section className="py-16 bg-[#08090d] border-t border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          {/* Section Header with Navigation Arrows */}
           <div className="flex items-end justify-between mb-8">
             <div>
-              <div className="flex items-center gap-2 text-[#e58a13] mb-1">
-                <Bike className="w-5 h-5 stroke-[2.5]" />
-                <span className="text-xs font-black uppercase tracking-wider">Our Services</span>
+              <div className="flex items-center gap-2 text-orange-500 mb-1">
+                <Bike className="w-4 h-4 text-orange-400" />
+                <span className="text-[11px] font-black uppercase tracking-wider text-orange-400">Our Services</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
                 Best Bike Repair & Maintenance Services
               </h2>
             </div>
 
-            {/* Orange Arrow Controls from Reference */}
+            {/* Navigation Arrows matching Image 1 */}
             <div className="flex items-center gap-2">
               <button 
-                onClick={() => setActiveServiceIdx((prev) => (prev > 0 ? prev - 1 : showcaseServices.length - 1))}
-                className="w-8 h-8 rounded-lg bg-[#e58a13] hover:bg-[#d97706] text-slate-950 flex items-center justify-center font-black transition-all"
-                title="Previous service"
+                onClick={scrollToBooking}
+                className="w-8 h-8 rounded-md bg-orange-500 text-slate-950 flex items-center justify-center font-bold hover:bg-orange-400 transition-colors shadow-sm cursor-pointer"
+                title="Previous"
               >
-                <ChevronLeft className="w-4 h-4 stroke-[3]" />
+                <ArrowLeft className="w-4 h-4" />
               </button>
               <button 
-                onClick={() => setActiveServiceIdx((prev) => (prev < showcaseServices.length - 1 ? prev + 1 : 0))}
-                className="w-8 h-8 rounded-lg bg-white hover:bg-slate-200 text-slate-950 flex items-center justify-center font-black transition-all"
-                title="Next service"
+                onClick={scrollToBooking}
+                className="w-8 h-8 rounded-md bg-white text-slate-950 flex items-center justify-center font-bold hover:bg-slate-200 transition-colors shadow-sm cursor-pointer"
+                title="Next"
               >
-                <ChevronRight className="w-4 h-4 stroke-[3]" />
+                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* 4 Photographic Cards exactly matching Reference Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {showcaseServices.map((srv, idx) => (
-              <div
+            {ourServicesList.map(srv => (
+              <div 
                 key={srv.id}
-                onClick={() => handleSelectServiceCard(srv)}
-                className={`group relative rounded-2xl overflow-hidden cursor-pointer h-72 sm:h-80 transition-all duration-300 ${
-                  activeServiceIdx === idx 
-                    ? 'ring-2 ring-[#e58a13] scale-[1.02] shadow-2xl' 
-                    : 'hover:-translate-y-1 shadow-lg'
-                }`}
+                onClick={scrollToBooking}
+                className="group relative h-72 rounded-2xl overflow-hidden border border-white/10 cursor-pointer shadow-lg hover:border-orange-500/50 transition-all duration-300"
               >
-                {/* Background Photo */}
                 <img 
                   src={srv.image} 
                   alt={srv.title} 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 brightness-75"
                 />
-
-                {/* Vignette Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-
-                {/* Card Text Content (Anchored at Bottom like Reference) */}
-                <div className="absolute bottom-0 inset-x-0 p-5">
-                  <h3 className="text-base font-extrabold text-white group-hover:text-[#e58a13] transition-colors leading-snug">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent" />
+                
+                <div className="absolute bottom-0 left-0 right-0 p-5 text-left">
+                  <h3 className="text-sm font-black text-white group-hover:text-orange-400 transition-colors leading-snug">
                     {srv.title}
                   </h3>
-                  <p className="text-xs text-slate-300 mt-1 line-clamp-2 leading-relaxed">
+                  <p className="text-[11px] text-slate-300 mt-1 line-clamp-2 leading-relaxed font-normal">
                     {srv.desc}
                   </p>
                 </div>
@@ -425,639 +432,812 @@ export default function BookingPage({ onBookingCreated }) {
       </section>
 
       {/* ========================================================================= */}
-      {/* 3. 7-DAY GUARANTEE & SERVICE WORKFLOW EXPLAINER                           */}
+      {/* 3. LATEST MODELS / SIGNATURE PACKAGES (Cards Grid from Reference Image 3)  */}
       {/* ========================================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        
-        {/* 7-Day Guarantee Banner */}
-        <div className="bg-[#12141c] border border-amber-500/30 rounded-3xl p-5 sm:p-6 mb-10 shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-4 flex-wrap justify-center md:justify-start">
-            <div className="w-12 h-12 rounded-2xl bg-[#e58a13] text-slate-950 flex items-center justify-center font-black flex-shrink-0 shadow-lg shadow-amber-500/20">
-              <BadgeCheck className="w-7 h-7 stroke-[2.5]" />
-            </div>
+      <section id="signature-packages-section" className="py-20 bg-[#0a0c10] border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+          {/* Section Header with Toggle Filter Pill */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-12 gap-6">
             <div>
-              <h4 className="text-white font-black text-base sm:text-lg">
-                ServiceSetu 7-Day Satisfaction Guarantee
-              </h4>
-              <p className="text-xs text-slate-300">
-                Not 100% happy with your service? Our mobile master technician will redo it for FREE. No questions asked.
+              <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight uppercase">
+                Latest Models
+              </h2>
+              <p className="text-xs text-slate-400 mt-2 max-w-xl leading-relaxed">
+                Engineered with cutting-edge essentials, ultra-precise control, and bold design to lead revolutions in doorstep maintenance.
               </p>
             </div>
+
+            {/* Toggle Switch matching Reference UI */}
+            <div className="flex items-center bg-[#12141a] p-1 rounded-xl border border-white/10 text-xs font-bold">
+              <button
+                onClick={() => setPackageFilter('popular')}
+                className={`px-4 py-2 rounded-lg transition-all ${
+                  packageFilter === 'popular' 
+                    ? 'bg-transparent text-slate-300' 
+                    : 'text-slate-500 hover:text-white'
+                }`}
+              >
+                Popular Items
+              </button>
+              <button
+                onClick={() => setPackageFilter('recent')}
+                className={`px-4 py-2 rounded-lg transition-all ${
+                  packageFilter === 'recent' 
+                    ? 'btn-copper-pill text-slate-950 font-black shadow-md' 
+                    : 'btn-copper-pill text-slate-950 font-black shadow-md'
+                }`}
+              >
+                Recent Items
+              </button>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3 text-xs font-bold text-amber-300 flex-wrap justify-center">
-            <span className="flex items-center gap-1.5 bg-black/40 px-3 py-1.5 rounded-xl border border-white/10">
-              <RefreshCcw className="w-3.5 h-3.5 text-amber-400" /> Free Redo Guarantee
-            </span>
-            <span className="flex items-center gap-1.5 bg-black/40 px-3 py-1.5 rounded-xl border border-white/10">
-              <Shield className="w-3.5 h-3.5 text-amber-400" /> 30-Day Parts Warranty
-            </span>
-            <span className="flex items-center gap-1.5 bg-black/40 px-3 py-1.5 rounded-xl border border-white/10">
-              <Zap className="w-3.5 h-3.5 text-amber-400" /> 90-Min Arrival
-            </span>
-          </div>
-        </div>
+          {/* 3 Column Signature Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {signatureModels.map(model => (
+              <div
+                key={model.id}
+                className="bg-[#12141a] rounded-2xl border border-white/10 overflow-hidden flex flex-col justify-between hover:border-orange-500/40 transition-all duration-300 group shadow-xl"
+              >
+                {/* Photo Studio Card Header */}
+                <div className="h-56 bg-[#181a22] overflow-hidden relative flex items-center justify-center p-4">
+                  <img 
+                    src={model.image} 
+                    alt={model.name} 
+                    className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500 brightness-95" 
+                  />
+                </div>
 
-        {/* 4 Simple Steps Explainer */}
-        <div className="bg-[#12141c] border border-white/10 rounded-3xl p-6 sm:p-8 mb-12 shadow-lg">
-          <div className="flex items-center gap-2 mb-6">
-            <Wrench className="w-5 h-5 text-amber-400" />
-            <h3 className="text-sm font-black uppercase tracking-wider text-amber-400">
-              How Doorstep Two-Wheeler Servicing Works
-            </h3>
-          </div>
+                {/* Card Specs & Details Content */}
+                <div className="p-6 flex-grow flex flex-col justify-between space-y-6">
+                  <div>
+                    <h3 className="text-xl font-black text-white tracking-tight">{model.name}</h3>
+                    <p className="text-xs text-slate-400 mt-1">{model.subtitle}</p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { num: '01', title: 'Pick Vehicle & Package', desc: 'Select your bike brand, model & upfront engine oil.' },
-              { num: '02', title: 'Mechanic at Your Door', desc: 'Verified technician arrives with tools and consumable kit.' },
-              { num: '03', title: 'Barcode-Verified Service', desc: 'Real-time oil scan & physical inspection audit.' },
-              { num: '04', title: 'OTP Handover & Proof', desc: 'Digital report with health metrics & warranty certificate.' },
-            ].map(stepItem => (
-              <div key={stepItem.num} className="bg-[#181a24] p-5 rounded-2xl border border-white/5 relative group hover:border-amber-500/30 transition-colors">
-                <span className="text-2xl font-black text-amber-500/30 group-hover:text-amber-500/80 transition-colors block mb-2 font-mono">
-                  {stepItem.num}
-                </span>
-                <strong className="text-white font-extrabold text-sm block mb-1">{stepItem.title}</strong>
-                <p className="text-xs text-slate-400 leading-relaxed">{stepItem.desc}</p>
+                    {/* 2x2 Tech Specs Grid (Exact from Reference Image) */}
+                    <div className="grid grid-cols-2 gap-3 mt-6 pt-5 border-t border-white/5 text-xs">
+                      <div>
+                        <span className="text-[10px] uppercase font-bold text-slate-500 block">ENGINE CC</span>
+                        <strong className="text-white font-extrabold">{model.engine}</strong>
+                      </div>
+                      <div>
+                        <span className="text-[10px] uppercase font-bold text-slate-500 block">DIAGNOSTIC</span>
+                        <strong className="text-white font-extrabold">{model.speed}</strong>
+                      </div>
+                      <div>
+                        <span className="text-[10px] uppercase font-bold text-slate-500 block">GENUINE OIL</span>
+                        <strong className="text-orange-400 font-extrabold">{model.power}</strong>
+                      </div>
+                      <div>
+                        <span className="text-[10px] uppercase font-bold text-slate-500 block">PRICE</span>
+                        <strong className="text-white font-black font-mono text-sm">{model.price}</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* View Details Action Button */}
+                  <button
+                    onClick={() => handleSelectSignaturePackage(model)}
+                    className="w-full btn-copper-pill text-xs font-black py-3.5 rounded-xl text-center shadow-md cursor-pointer"
+                  >
+                    View Details
+                  </button>
+                </div>
               </div>
             ))}
           </div>
-        </div>
 
+        </div>
       </section>
 
       {/* ========================================================================= */}
-      {/* 4. THE INTERACTIVE BOOKING FLOW - DARK LUXURY WORKSHOP THEME              */}
+      {/* 3. ABOUT US / THE SERVICESETU MOVEMENT (Exact Layout from Reference)       */}
       {/* ========================================================================= */}
-      <section id="booking-flow-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-        
-        {/* Stepper Progress Bar */}
-        {step < 6 && (
-          <div className="mb-10">
-            <div className="flex items-center justify-between max-w-4xl mx-auto bg-[#12141c] border border-white/10 p-3.5 sm:p-4 rounded-2xl shadow-xl">
-              {[
-                { num: 1, title: 'Select Vehicle' },
-                { num: 2, title: 'Service Package' },
-                { num: 3, title: 'Engine Oil' },
-                { num: 4, title: 'Schedule & Place' },
-                { num: 5, title: 'Confirm & Pay' }
-              ].map(s => (
-                <div 
-                  key={s.num}
-                  onClick={() => { if (step > s.num) setStep(s.num); }}
-                  className={`flex items-center space-x-2 cursor-pointer transition-colors ${
-                    step >= s.num ? 'text-[#e58a13] font-extrabold' : 'text-slate-500 font-medium'
-                  }`}
-                >
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all ${
-                    step === s.num 
-                      ? 'bg-[#e58a13] text-slate-950 ring-4 ring-amber-500/20 shadow-lg shadow-amber-500/30' 
-                      : step > s.num 
-                      ? 'bg-emerald-500 text-white' 
-                      : 'bg-white/5 text-slate-400 border border-white/10'
-                  }`}>
-                    {step > s.num ? <CheckCircle className="w-4 h-4" /> : s.num}
-                  </div>
-                  <span className="text-xs sm:text-sm hidden md:inline">{s.title}</span>
-                </div>
-              ))}
+      <section id="about-section" className="py-24 bg-[#060709] border-t border-white/5 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            {/* Left Photo */}
+            <div className="lg:col-span-6 flex justify-center">
+              <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl max-w-md w-full">
+                <img 
+                  src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=700&auto=format&fit=crop&q=80" 
+                  alt="Crafted Two-Wheeler Machine" 
+                  className="w-full h-auto object-cover"
+                />
+              </div>
             </div>
-          </div>
-        )}
 
-        {/* STEP 1: VEHICLE SELECTION */}
-        {step === 1 && (
-          <div className="bg-[#12141c] rounded-3xl border border-white/10 p-6 sm:p-10 shadow-2xl">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4 border-b border-white/10 pb-6">
+            {/* Right Text Content */}
+            <div className="lg:col-span-6 space-y-6">
+              <span className="text-xs font-black uppercase tracking-widest text-white">About Us</span>
+              
+              <p className="text-slate-300 text-sm leading-relaxed">
+                We're not a factory. We're a movement of master mechanics, speed freaks, and technical visionaries. Born from the tarmac and shaped by obsession, our doorstep protocols treat every motorcycle as a high-precision machine.
+              </p>
+
               <div>
-                <h2 className="text-2xl font-black text-white flex items-center gap-3">
-                  <Bike className="w-6 h-6 text-[#e58a13]" />
-                  Step 1: Select Your Two-Wheeler
-                </h2>
-                <p className="text-xs text-slate-400 mt-1">
-                  Choose your motorcycle or scooter from the catalog or input manually.
+                <h4 className="text-orange-500 font-black text-sm uppercase tracking-wider mb-2">
+                  Why We Ride?
+                </h4>
+                <p className="text-slate-400 text-xs leading-relaxed">
+                  Because mediocrity isn't an option. Because power should be truthful. Because the road deserves more than just roadside guesswork. We bring certified technicians, tamper-evident barcode verified oils, and digital proof straight to your driveway.
                 </p>
               </div>
 
-              {/* Custom Vehicle Entry Toggle */}
-              <button
-                type="button"
-                onClick={() => setIsCustomVehicle(!isCustomVehicle)}
-                className="btn-outline-garage text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-2"
-              >
-                <PlusCircle className="w-4 h-4 text-[#e58a13]" />
-                <span>{isCustomVehicle ? 'Browse Standard Brands' : 'Add Custom Bike Model'}</span>
-              </button>
+              <div className="pt-4 flex items-center gap-6">
+                <div>
+                  <strong className="text-2xl font-black text-white font-mono block">10,000+</strong>
+                  <span className="text-slate-500 text-xs font-medium">Bikes Serviced</span>
+                </div>
+                <div className="w-[1px] h-8 bg-white/10" />
+                <div>
+                  <strong className="text-2xl font-black text-orange-400 font-mono block">100%</strong>
+                  <span className="text-slate-500 text-xs font-medium">Genuine Guarantee</span>
+                </div>
+                <div className="w-[1px] h-8 bg-white/10" />
+                <div>
+                  <strong className="text-2xl font-black text-emerald-400 font-mono block">7-Day</strong>
+                  <span className="text-slate-500 text-xs font-medium">Free Redo</span>
+                </div>
+              </div>
             </div>
 
-            {isCustomVehicle ? (
-              <div className="bg-[#181a24] border border-amber-500/30 p-6 rounded-2xl space-y-5">
-                <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
-                  <Wrench className="w-4 h-4 text-[#e58a13]" />
-                  Manual Vehicle Specification
-                </h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 4. PERFORMANCE FEATURES (4 Minimal Icons from Reference)                   */}
+      {/* ========================================================================= */}
+      <section id="features-section" className="py-20 bg-[#0a0c10] border-t border-white/5 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+          <h2 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-14">
+            Performance Features
+          </h2>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="space-y-3">
+              <div className="w-12 h-12 rounded-full border border-orange-500/40 bg-orange-500/10 text-orange-400 flex items-center justify-center mx-auto">
+                <Gauge className="w-5 h-5" />
+              </div>
+              <h4 className="font-extrabold text-sm text-white">Raw Power</h4>
+              <p className="text-xs text-slate-400">100% Barcode Genuine Motul & Castrol Synthetic Oils</p>
+            </div>
+
+            <div className="space-y-3">
+              <div className="w-12 h-12 rounded-full border border-orange-500/40 bg-orange-500/10 text-orange-400 flex items-center justify-center mx-auto">
+                <Wrench className="w-5 h-5" />
+              </div>
+              <h4 className="font-extrabold text-sm text-white">Custom Build</h4>
+              <p className="text-xs text-slate-400">32-Point Master Multi-System Inspection Audit</p>
+            </div>
+
+            <div className="space-y-3">
+              <div className="w-12 h-12 rounded-full border border-orange-500/40 bg-orange-500/10 text-orange-400 flex items-center justify-center mx-auto">
+                <Sliders className="w-5 h-5" />
+              </div>
+              <h4 className="font-extrabold text-sm text-white">Perfect Control</h4>
+              <p className="text-xs text-slate-400">Zero Hidden Costs, Fixed Upfront Digital Pricing</p>
+            </div>
+
+            <div className="space-y-3">
+              <div className="w-12 h-12 rounded-full border border-orange-500/40 bg-orange-500/10 text-orange-400 flex items-center justify-center mx-auto">
+                <Zap className="w-5 h-5" />
+              </div>
+              <h4 className="font-extrabold text-sm text-white">Future Ready</h4>
+              <p className="text-xs text-slate-400">7-Day Free Redo & Electric Vehicle (EV) Maintenance</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 5. RIDER REVIEWS (Exact Testimonial Grid from Reference)                   */}
+      {/* ========================================================================= */}
+      <section id="reviews-section" className="py-20 bg-[#060709] border-t border-white/5 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+          <h2 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-14">
+            Rider Reviews
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {riderReviews.map((rev, idx) => (
+              <div 
+                key={idx} 
+                className="bg-[#12141a] rounded-2xl border border-white/5 p-8 text-left space-y-4 hover:border-orange-500/30 transition-colors shadow-lg"
+              >
+                <div className="flex items-center space-x-1 text-orange-400">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-3.5 h-3.5 fill-orange-400" />
+                  ))}
+                </div>
+
+                <p className="text-xs text-slate-300 leading-relaxed italic">
+                  "{rev.quote}"
+                </p>
+
+                <div className="flex items-center space-x-3 pt-3 border-t border-white/5">
+                  <img src={rev.avatar} alt={rev.author} className="w-9 h-9 rounded-full object-cover border border-white/10" />
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Make / Manufacturer</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Royal Enfield, Jawa, KTM, Aprilia..."
-                      value={customMake}
-                      onChange={(e) => setCustomMake(e.target.value)}
-                      className="w-full p-3.5 rounded-xl bg-[#0e1015] border border-white/10 text-white placeholder-slate-600 text-sm focus:border-amber-400 focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Model Name</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Hunter 350, Continental GT, Duke 390..."
-                      value={customModel}
-                      onChange={(e) => setCustomModel(e.target.value)}
-                      className="w-full p-3.5 rounded-xl bg-[#0e1015] border border-white/10 text-white placeholder-slate-600 text-sm focus:border-amber-400 focus:outline-none"
-                    />
+                    <h5 className="font-extrabold text-xs text-white leading-tight">{rev.author}</h5>
+                    <span className="text-[10px] text-slate-500">{rev.city}</span>
                   </div>
                 </div>
               </div>
-            ) : (
-              <>
-                {/* Brand Tabs */}
-                <div className="mb-8">
-                  <label className="block text-xs font-black uppercase tracking-wider text-[#e58a13] mb-3">
-                    Select Manufacturer
-                  </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-                    {vehiclesData.map(v => (
-                      <button
-                        key={v.make}
-                        type="button"
-                        onClick={() => {
-                          setSelectedMake(v.make);
-                          if (v.models?.[0]) setSelectedModel(v.models[0]);
-                          setSearchQuery('');
-                        }}
-                        className={`p-3.5 rounded-2xl border text-xs font-black tracking-wide text-center transition-all ${
-                          selectedMake === v.make
-                            ? 'border-[#e58a13] bg-amber-500/10 text-[#e58a13] shadow-lg shadow-amber-500/10 ring-1 ring-amber-500/40'
-                            : 'border-white/5 bg-[#181a24] text-slate-300 hover:border-white/20'
-                        }`}
-                      >
-                        {v.make}
-                      </button>
-                    ))}
+            ))}
+          </div>
+
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 6. BANNER: "BE THE FIRST TO RIDE" (Exact CTA from Reference Image)        */}
+      {/* ========================================================================= */}
+      <section className="py-28 relative text-center overflow-hidden border-t border-white/5">
+        {/* Dark Vignette Hero Image Background */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=1400&auto=format&fit=crop&q=80" 
+            alt="Motorcycle on open highway" 
+            className="w-full h-full object-cover brightness-[0.25]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#060709] via-transparent to-[#060709]" />
+        </div>
+
+        <div className="relative z-10 max-w-2xl mx-auto px-4 space-y-4">
+          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight uppercase">
+            Be the First to Experience
+          </h2>
+          <p className="text-xs font-bold uppercase tracking-widest text-orange-400">
+            Doorstep Services Starting at ₹499
+          </p>
+
+          <div className="pt-4 flex flex-col items-center gap-3">
+            <button
+              onClick={scrollToBooking}
+              className="btn-copper-pill px-10 py-3.5 rounded-full text-xs font-black tracking-widest uppercase shadow-xl cursor-pointer"
+            >
+              Order Now
+            </button>
+            <a 
+              href="tel:1-800-SETU-BIKE" 
+              className="text-xs text-slate-400 hover:text-white underline underline-offset-4 font-medium"
+            >
+              Call 24/7 Helpline: 1-800-SETU-BIKE
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 7. THE INTERACTIVE BOOKING WORKFLOW (5-Step Master Wizard)                */}
+      {/* ========================================================================= */}
+      <section id="booking-flow-section" className="py-20 bg-[#0a0c10] border-t border-white/5">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+          <div className="text-center mb-12">
+            <span className="text-[10px] font-black uppercase tracking-widest text-orange-400 bg-orange-500/10 border border-orange-500/20 px-3.5 py-1.5 rounded-full inline-block mb-3">
+              Doorstep Service Wizard
+            </span>
+            <h2 className="text-3xl font-black text-white tracking-tight">
+              Configure Your Doorstep Visit
+            </h2>
+            <p className="text-xs text-slate-400 mt-1">
+              Select vehicle model, service package, engine oil, and convenient arrival time.
+            </p>
+          </div>
+
+          {/* Stepper Progress Bar */}
+          {step < 6 && (
+            <div className="mb-10">
+              <div className="flex items-center justify-between max-w-3xl mx-auto bg-[#12141a] border border-white/10 p-3 rounded-full shadow-xl">
+                {[
+                  { num: 1, title: 'Vehicle' },
+                  { num: 2, title: 'Package' },
+                  { num: 3, title: 'Oil Brand' },
+                  { num: 4, title: 'Schedule' },
+                  { num: 5, title: 'Checkout' }
+                ].map(s => (
+                  <div 
+                    key={s.num}
+                    onClick={() => { if (step > s.num) setStep(s.num); }}
+                    className={`flex items-center space-x-2 cursor-pointer transition-colors ${
+                      step >= s.num ? 'text-orange-400 font-extrabold' : 'text-slate-500 font-medium'
+                    }`}
+                  >
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black transition-all ${
+                      step === s.num 
+                        ? 'bg-orange-500 text-slate-950 ring-4 ring-orange-500/20 shadow-md' 
+                        : step > s.num 
+                        ? 'bg-emerald-500 text-white' 
+                        : 'bg-white/5 text-slate-500'
+                    }`}>
+                      {step > s.num ? <CheckCircle className="w-3.5 h-3.5" /> : s.num}
+                    </div>
+                    <span className="text-xs hidden md:inline">{s.title}</span>
                   </div>
-                </div>
+                ))}
+              </div>
+            </div>
+          )}
 
-                {/* Model Search Input */}
-                <div className="mb-6 relative">
-                  <input
-                    id="vehicle-search-input"
-                    type="text"
-                    placeholder={`Search ${selectedMake} models (e.g. Activa, Pulsar, Apache, Shine, CB350)...`}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-[#181a24] border border-white/10 text-white placeholder-slate-500 text-sm focus:border-amber-400 focus:outline-none"
-                  />
-                  <Search className="w-5 h-5 text-amber-400 absolute left-3.5 top-3.5" />
-                </div>
-
-                {/* Models Grid */}
+          {/* STEP 1: VEHICLE SELECTION */}
+          {step === 1 && (
+            <div className="bg-[#12141a] rounded-3xl border border-white/10 p-6 sm:p-10 shadow-2xl">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4 border-b border-white/10 pb-6">
                 <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <label className="text-xs font-black uppercase tracking-wider text-slate-400">
-                      Available Models ({filteredModels.length} Found)
-                    </label>
-                    <span className="text-xs text-[#e58a13] font-bold">Brand: {selectedMake}</span>
+                  <h3 className="text-xl font-black text-white flex items-center gap-2.5">
+                    <Bike className="w-5 h-5 text-orange-400" />
+                    Step 1: Select Your Vehicle
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Choose your motorcycle or scooter brand or enter custom specs.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsCustomVehicle(!isCustomVehicle)}
+                  className="btn-glass-pill text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-2"
+                >
+                  <PlusCircle className="w-3.5 h-3.5 text-orange-400" />
+                  <span>{isCustomVehicle ? 'Catalog View' : 'Custom Vehicle'}</span>
+                </button>
+              </div>
+
+              {isCustomVehicle ? (
+                <div className="bg-[#181a24] border border-orange-500/30 p-6 rounded-2xl space-y-4">
+                  <h4 className="font-bold text-sm text-white">Enter Bike / Scooter Details Manually</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-400 mb-1">Make / Brand</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Royal Enfield, Jawa, KTM, Aprilia..."
+                        value={customMake}
+                        onChange={(e) => setCustomMake(e.target.value)}
+                        className="w-full p-3.5 rounded-xl bg-[#0c0e12] border border-white/10 text-white text-sm focus:border-orange-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-400 mb-1">Model Name</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Hunter 350, Continental GT, Duke 390..."
+                        value={customModel}
+                        onChange={(e) => setCustomModel(e.target.value)}
+                        className="w-full p-3.5 rounded-xl bg-[#0c0e12] border border-white/10 text-white text-sm focus:border-orange-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {/* Brand Tabs */}
+                  <div className="mb-6">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Select Brand</label>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+                      {vehiclesData.map(v => (
+                        <button
+                          key={v.make}
+                          type="button"
+                          onClick={() => {
+                            setSelectedMake(v.make);
+                            if (v.models?.[0]) setSelectedModel(v.models[0]);
+                            setSearchQuery('');
+                          }}
+                          className={`p-3 rounded-xl border text-xs font-bold text-center transition-all ${
+                            selectedMake === v.make
+                              ? 'border-orange-500 bg-orange-500/10 text-orange-400 ring-1 ring-orange-500/40'
+                              : 'border-white/5 bg-[#181a24] text-slate-300 hover:border-white/20'
+                          }`}
+                        >
+                          {v.make}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* Search Input */}
+                  <div className="mb-6 relative">
+                    <input
+                      id="vehicle-search-input"
+                      type="text"
+                      placeholder={`Search ${selectedMake} models (e.g. Activa, Pulsar, Apache, Shine)...`}
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#181a24] border border-white/10 text-white placeholder-slate-500 text-xs focus:border-orange-500 focus:outline-none"
+                    />
+                    <Search className="w-4 h-4 text-orange-400 absolute left-3.5 top-3.5" />
+                  </div>
+
+                  {/* Models Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {filteredModels.map(m => {
                       const isSelected = selectedModel?.id === m.id;
                       return (
                         <div
                           key={m.id}
                           onClick={() => setSelectedModel(m)}
-                          className={`p-5 rounded-2xl border cursor-pointer transition-all ${
+                          className={`p-4 rounded-xl border cursor-pointer transition-all ${
                             isSelected
-                              ? 'border-[#e58a13] bg-amber-500/10 text-white shadow-xl shadow-amber-500/10 ring-1 ring-amber-500/40'
+                              ? 'border-orange-500 bg-orange-500/10 text-white ring-1 ring-orange-500/40'
                               : 'border-white/5 bg-[#181a24] hover:border-white/20'
                           }`}
                         >
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="font-black text-base text-white">{m.name}</span>
-                            <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-white/5 text-[#e58a13] border border-white/5">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="font-extrabold text-sm text-white">{m.name}</span>
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 text-orange-400">
                               {m.category}
                             </span>
                           </div>
-                          <div className="flex items-center justify-between text-xs text-slate-400 mt-3 pt-3 border-t border-white/5 font-medium">
-                            <span className="flex items-center gap-1"><Wrench className="w-3.5 h-3.5 text-amber-400" /> {m.engine}</span>
-                            <span className="flex items-center gap-1"><Droplet className="w-3.5 h-3.5 text-amber-400" /> {m.defaultOilQty}</span>
+                          <div className="flex items-center justify-between text-xs text-slate-400 mt-2 pt-2 border-t border-white/5">
+                            <span>{m.engine}</span>
+                            <span>{m.defaultOilQty}</span>
                           </div>
                         </div>
                       );
                     })}
                   </div>
-                </div>
-              </>
-            )}
+                </>
+              )}
 
-            {/* Next Action */}
-            <div className="mt-10 pt-6 border-t border-white/10 flex justify-end">
-              <button
-                onClick={() => {
-                  if (isCustomVehicle) {
-                    if (!customMake || !customModel) {
-                      alert('Please provide your bike brand and model.');
+              <div className="mt-8 pt-6 border-t border-white/10 flex justify-end">
+                <button
+                  onClick={() => {
+                    if (isCustomVehicle) {
+                      if (!customMake || !customModel) {
+                        alert('Please provide brand and model.');
+                        return;
+                      }
+                    } else if (!selectedModel) {
+                      alert('Please select a model.');
                       return;
                     }
-                  } else if (!selectedModel) {
-                    alert('Please select a bike model to proceed.');
-                    return;
-                  }
-                  setStep(2);
-                }}
-                className="btn-amber-glow px-8 py-3.5 rounded-2xl text-sm font-black flex items-center gap-2 cursor-pointer"
-              >
-                <span>Continue to Service Package</span>
-                <ArrowRight className="w-4 h-4 stroke-[3]" />
-              </button>
+                    setStep(2);
+                  }}
+                  className="btn-copper-pill px-8 py-3 rounded-xl text-xs font-black flex items-center gap-2 cursor-pointer"
+                >
+                  <span>Continue to Package</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* STEP 2: SERVICE PACKAGE SELECTION */}
-        {step === 2 && (
-          <div className="bg-[#12141c] rounded-3xl border border-white/10 p-6 sm:p-10 shadow-2xl">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4 border-b border-white/10 pb-6">
-              <div>
-                <h2 className="text-2xl font-black text-white flex items-center gap-3">
-                  <Sparkles className="w-6 h-6 text-[#e58a13]" />
-                  Step 2: Choose Service Package
-                </h2>
-                <p className="text-xs text-slate-400 mt-1">
-                  Selected Bike: <strong className="text-[#e58a13]">{isCustomVehicle ? `${customMake} ${customModel}` : `${selectedMake} ${selectedModel?.name}`}</strong>
-                </p>
+          {/* STEP 2: SERVICE PACKAGE SELECTION */}
+          {step === 2 && (
+            <div className="bg-[#12141a] rounded-3xl border border-white/10 p-6 sm:p-10 shadow-2xl">
+              <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
+                <div>
+                  <h3 className="text-xl font-black text-white flex items-center gap-2.5">
+                    <Sparkles className="w-5 h-5 text-orange-400" />
+                    Step 2: Choose Service Package
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Selected Bike: <strong className="text-orange-400">{isCustomVehicle ? `${customMake} ${customModel}` : `${selectedMake} ${selectedModel?.name}`}</strong>
+                  </p>
+                </div>
               </div>
 
-              <span className="text-xs font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30 px-3 py-1.5 rounded-xl">
-                Fixed Pricing · No Upselling
-              </span>
-            </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-6">
+                {packagesData.map(pkg => {
+                  const isSelected = selectedPkg?.id === pkg.id;
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-6">
-              {packagesData.map(pkg => {
-                const isSelected = selectedPkg?.id === pkg.id;
-
-                return (
-                  <div
-                    key={pkg.id}
-                    onClick={() => setSelectedPkg(pkg)}
-                    className={`relative p-6 rounded-3xl border cursor-pointer transition-all flex flex-col justify-between ${
-                      isSelected
-                        ? 'border-[#e58a13] bg-amber-500/10 ring-2 ring-amber-500/40 shadow-2xl shadow-amber-500/20'
-                        : 'border-white/5 bg-[#181a24] hover:border-white/20'
-                    }`}
-                  >
-                    {pkg.popular && (
-                      <span className="absolute -top-3 right-6 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 text-[11px] font-black uppercase px-3 py-0.5 rounded-full shadow-lg">
-                        Recommended
-                      </span>
-                    )}
-
-                    <div>
-                      <div className="flex items-center justify-between mb-4">
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#e58a13] bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-lg">
-                          {pkg.serviceType === 'heavy_workshop' ? 'Workshop Repair' : 'Doorstep Service'}
-                        </span>
-                        <div className="text-right">
-                          <span className="text-3xl font-black text-white">₹{pkg.price}</span>
-                          <span className="text-[10px] text-slate-400 block font-bold">+ GST</span>
-                        </div>
-                      </div>
-
-                      <h3 className="font-black text-xl text-white">{pkg.name}</h3>
-                      <p className="text-xs text-slate-400 mt-1 mb-6 leading-relaxed">{pkg.tagline}</p>
-
-                      <div className="border-t border-white/5 pt-4 space-y-2.5 mb-6">
-                        {pkg.features.slice(0, 5).map((feat, idx) => (
-                          <div key={idx} className="flex items-start text-xs text-slate-300">
-                            <CheckCircle2 className="w-4 h-4 text-amber-400 mr-2 mt-0.5 flex-shrink-0" />
-                            <span>{feat}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="pt-4 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
-                      <span className="flex items-center gap-1 font-medium"><Clock className="w-3.5 h-3.5 text-amber-400" /> ~{pkg.estimatedMinutes} mins</span>
-                      <span className="font-bold text-[#e58a13]">{pkg.idealFor}</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="mt-10 pt-6 border-t border-white/10 flex justify-between">
-              <button 
-                onClick={() => setStep(1)} 
-                className="btn-outline-garage px-6 py-3 rounded-xl text-xs font-bold flex items-center gap-2"
-              >
-                <ArrowLeft className="w-4 h-4" /> <span>Back</span>
-              </button>
-              <button 
-                onClick={() => setStep(3)} 
-                className="btn-amber-glow px-8 py-3 rounded-xl text-xs font-black flex items-center gap-2"
-              >
-                <span>Continue to Engine Oil</span> <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* STEP 3: ENGINE OIL SELECTION */}
-        {step === 3 && (
-          <div className="bg-[#12141c] rounded-3xl border border-white/10 p-6 sm:p-10 shadow-2xl">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4 border-b border-white/10 pb-6">
-              <div>
-                <h2 className="text-2xl font-black text-white flex items-center gap-3">
-                  <Droplet className="w-6 h-6 text-[#e58a13]" />
-                  Step 3: Engine Oil Brand Upgrade
-                </h2>
-                <p className="text-xs text-slate-400 mt-1">
-                  Genuine barcode-scanned oil canister unsealed right in front of your eyes.
-                </p>
-              </div>
-
-              <span className="text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30 px-3 py-1.5 rounded-xl">
-                Anti-Counterfeit Barcode Checked
-              </span>
-            </div>
-
-            <div className="space-y-4 my-6">
-              {oilOptionsData.map(oil => {
-                const isSelected = selectedOil?.id === oil.id;
-                return (
-                  <div
-                    key={oil.id}
-                    onClick={() => setSelectedOil(oil)}
-                    className={`p-5 rounded-2xl border cursor-pointer transition-all flex items-center justify-between gap-4 ${
-                      isSelected 
-                        ? 'border-[#e58a13] bg-amber-500/10 ring-2 ring-amber-500/40 shadow-xl shadow-amber-500/10' 
-                        : 'border-white/5 bg-[#181a24] hover:border-white/20'
-                    }`}
-                  >
-                    <div className="flex items-start space-x-4">
-                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black ${
-                        oil.priceDifference === 0 ? 'bg-white/5 text-slate-300' : 'bg-amber-500 text-slate-950 shadow-md'
-                      }`}>
-                        <Fuel className="w-6 h-6 stroke-[2.5]" />
-                      </div>
+                  return (
+                    <div
+                      key={pkg.id}
+                      onClick={() => setSelectedPkg(pkg)}
+                      className={`relative p-6 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between ${
+                        isSelected
+                          ? 'border-orange-500 bg-orange-500/10 ring-2 ring-orange-500/40 shadow-xl'
+                          : 'border-white/5 bg-[#181a24] hover:border-white/20'
+                      }`}
+                    >
                       <div>
-                        <div className="flex items-center space-x-2">
-                          <h4 className="font-black text-base text-white">{oil.brand}</h4>
-                          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-white/5 text-[#e58a13] border border-white/5">
-                            {oil.badge}
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded">
+                            {pkg.serviceType === 'heavy_workshop' ? 'Workshop' : 'Doorstep'}
                           </span>
+                          <span className="text-2xl font-black text-white">₹{pkg.price}</span>
                         </div>
-                        <p className="text-xs font-bold text-amber-300 mt-0.5">{oil.spec}</p>
-                        <p className="text-xs text-slate-400 mt-1">{oil.description}</p>
+
+                        <h4 className="font-black text-lg text-white">{pkg.name}</h4>
+                        <p className="text-xs text-slate-400 mt-1 mb-4">{pkg.tagline}</p>
+
+                        <div className="border-t border-white/5 pt-3 space-y-2 mb-4">
+                          {pkg.features.slice(0, 5).map((feat, idx) => (
+                            <div key={idx} className="flex items-start text-xs text-slate-300">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-orange-400 mr-2 mt-0.5 flex-shrink-0" />
+                              <span>{feat}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="pt-3 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
+                        <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-orange-400" /> ~{pkg.estimatedMinutes}m</span>
+                        <span className="font-bold text-orange-400">{pkg.idealFor}</span>
                       </div>
                     </div>
+                  );
+                })}
+              </div>
 
-                    <div className="text-right">
-                      <div className="text-base font-black text-white">
-                        {oil.priceDifference === 0 ? 'Included in Base' : `+ ₹${oil.priceDifference}`}
+              <div className="mt-8 pt-6 border-t border-white/10 flex justify-between">
+                <button onClick={() => setStep(1)} className="btn-glass-pill px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2">
+                  <ArrowLeft className="w-4 h-4" /> <span>Back</span>
+                </button>
+                <button onClick={() => setStep(3)} className="btn-copper-pill px-7 py-2.5 rounded-xl text-xs font-black flex items-center gap-2">
+                  <span>Continue to Oil</span> <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 3: ENGINE OIL UPGRADE */}
+          {step === 3 && (
+            <div className="bg-[#12141a] rounded-3xl border border-white/10 p-6 sm:p-10 shadow-2xl">
+              <h3 className="text-xl font-black text-white mb-2 flex items-center gap-2.5">
+                <Droplet className="w-5 h-5 text-orange-400" />
+                Step 3: Engine Oil Brand Upgrade
+              </h3>
+              <p className="text-xs text-slate-400 mb-6">
+                Unsealed in front of you with real-time barcode authenticity verification.
+              </p>
+
+              <div className="space-y-3 my-6">
+                {oilOptionsData.map(oil => {
+                  const isSelected = selectedOil?.id === oil.id;
+                  return (
+                    <div
+                      key={oil.id}
+                      onClick={() => setSelectedOil(oil)}
+                      className={`p-4 rounded-xl border cursor-pointer transition-all flex items-center justify-between gap-4 ${
+                        isSelected 
+                          ? 'border-orange-500 bg-orange-500/10 ring-1 ring-orange-500/40' 
+                          : 'border-white/5 bg-[#181a24] hover:border-white/20'
+                      }`}
+                    >
+                      <div className="flex items-start space-x-3">
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold ${
+                          oil.priceDifference === 0 ? 'bg-white/5 text-slate-300' : 'bg-orange-500 text-slate-950 shadow'
+                        }`}>
+                          <Fuel className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <div className="flex items-center space-x-2">
+                            <h5 className="font-extrabold text-sm text-white">{oil.brand}</h5>
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 text-orange-400">{oil.badge}</span>
+                          </div>
+                          <p className="text-xs text-orange-300">{oil.spec}</p>
+                          <p className="text-[11px] text-slate-400 mt-0.5">{oil.description}</p>
+                        </div>
                       </div>
-                      <span className="text-[10px] text-slate-500 block font-medium">Difference vs Base Oil</span>
+
+                      <div className="text-right">
+                        <span className="text-sm font-black text-white">
+                          {oil.priceDifference === 0 ? 'Included' : `+ ₹${oil.priceDifference}`}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-white/10 flex justify-between">
+                <button onClick={() => setStep(2)} className="btn-glass-pill px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2">
+                  <ArrowLeft className="w-4 h-4" /> <span>Back</span>
+                </button>
+                <button onClick={() => setStep(4)} className="btn-copper-pill px-7 py-2.5 rounded-xl text-xs font-black flex items-center gap-2">
+                  <span>Continue to Schedule</span> <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 4: SCHEDULE & LOCATION */}
+          {step === 4 && (
+            <div className="bg-[#12141a] rounded-3xl border border-white/10 p-6 sm:p-10 shadow-2xl">
+              <h3 className="text-xl font-black text-white mb-2 flex items-center gap-2.5">
+                <Calendar className="w-5 h-5 text-orange-400" />
+                Step 4: Doorstep Schedule & Address
+              </h3>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 my-6">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-400 mb-1">Service Date</label>
+                    <input
+                      type="date"
+                      value={bookingDate}
+                      min={new Date().toISOString().split('T')[0]}
+                      onChange={(e) => setBookingDate(e.target.value)}
+                      className="w-full p-3 rounded-xl bg-[#181a24] border border-white/10 font-bold text-white text-xs focus:border-orange-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-400 mb-1">Preferred Time Slot</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {['08:30 AM - 10:00 AM', '10:00 AM - 11:30 AM', '01:00 PM - 02:30 PM', '03:00 PM - 04:30 PM'].map(slot => (
+                        <button
+                          key={slot}
+                          type="button"
+                          onClick={() => setTimeSlot(slot)}
+                          className={`p-2.5 rounded-xl text-xs font-bold border transition-all ${
+                            timeSlot === slot ? 'border-orange-500 bg-orange-500/10 text-orange-400' : 'border-white/5 bg-[#181a24] text-slate-400'
+                          }`}
+                        >
+                          {slot}
+                        </button>
+                      ))}
                     </div>
                   </div>
-                );
-              })}
-            </div>
 
-            <div className="mt-10 pt-6 border-t border-white/10 flex justify-between">
-              <button onClick={() => setStep(2)} className="btn-outline-garage px-6 py-3 rounded-xl text-xs font-bold flex items-center gap-2">
-                <ArrowLeft className="w-4 h-4" /> <span>Back</span>
-              </button>
-              <button onClick={() => setStep(4)} className="btn-amber-glow px-8 py-3 rounded-xl text-xs font-black flex items-center gap-2">
-                <span>Continue to Schedule</span> <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* STEP 4: SCHEDULE & LOCATION */}
-        {step === 4 && (
-          <div className="bg-[#12141c] rounded-3xl border border-white/10 p-6 sm:p-10 shadow-2xl">
-            <h2 className="text-2xl font-black text-white mb-2 flex items-center gap-3">
-              <Calendar className="w-6 h-6 text-[#e58a13]" />
-              Step 4: Doorstep Location & Schedule
-            </h2>
-            <p className="text-xs text-slate-400 mb-8">
-              Choose your preferred date, convenient time slot, and delivery address.
-            </p>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 my-6">
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Service Date</label>
-                  <input
-                    type="date"
-                    value={bookingDate}
-                    min={new Date().toISOString().split('T')[0]}
-                    onChange={(e) => setBookingDate(e.target.value)}
-                    className="w-full p-3.5 rounded-xl bg-[#181a24] border border-white/10 font-bold text-white text-sm focus:border-amber-400 focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Preferred Time Slot</label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {[
-                      '08:30 AM - 10:00 AM',
-                      '10:00 AM - 11:30 AM',
-                      '01:00 PM - 02:30 PM',
-                      '03:00 PM - 04:30 PM'
-                    ].map(slot => (
-                      <button
-                        key={slot}
-                        type="button"
-                        onClick={() => setTimeSlot(slot)}
-                        className={`p-3 rounded-xl text-xs font-bold border transition-all ${
-                          timeSlot === slot 
-                            ? 'border-[#e58a13] bg-amber-500/10 text-[#e58a13]' 
-                            : 'border-white/5 bg-[#181a24] text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        {slot}
-                      </button>
-                    ))}
+                  <div className="space-y-3 pt-3 border-t border-white/5">
+                    <input
+                      type="text"
+                      placeholder="Full Name"
+                      value={customerName}
+                      onChange={(e) => setCustomerName(e.target.value)}
+                      className="w-full p-3 rounded-xl bg-[#181a24] border border-white/10 text-white text-xs focus:border-orange-500 focus:outline-none"
+                    />
+                    <input
+                      type="tel"
+                      placeholder="Mobile Phone"
+                      value={customerPhone}
+                      onChange={(e) => setCustomerPhone(e.target.value)}
+                      className="w-full p-3 rounded-xl bg-[#181a24] border border-white/10 text-white text-xs focus:border-orange-500 focus:outline-none"
+                    />
                   </div>
                 </div>
 
-                <div className="space-y-4 border-t border-white/10 pt-5">
-                  <h4 className="font-extrabold text-sm text-white">Contact Information</h4>
-                  <input
-                    type="text"
-                    placeholder="Full Name"
-                    value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full p-3.5 rounded-xl bg-[#181a24] border border-white/10 text-white placeholder-slate-600 text-sm focus:border-amber-400 focus:outline-none"
+                <div className="space-y-4">
+                  <label className="block text-xs font-bold text-slate-400">Doorstep Delivery Address</label>
+                  <textarea
+                    rows={3}
+                    placeholder="House/Flat No., Street, Landmark..."
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className="w-full p-3 rounded-xl bg-[#181a24] border border-white/10 text-white text-xs focus:border-orange-500 focus:outline-none"
                   />
-                  <input
-                    type="tel"
-                    placeholder="Mobile Phone Number"
-                    value={customerPhone}
-                    onChange={(e) => setCustomerPhone(e.target.value)}
-                    className="w-full p-3.5 rounded-xl bg-[#181a24] border border-white/10 text-white placeholder-slate-600 text-sm focus:border-amber-400 focus:outline-none"
-                  />
+
+                  <div className="border border-white/10 rounded-xl bg-[#181a24] p-3 text-white">
+                    <div className="flex items-center justify-between text-xs mb-2">
+                      <span className="font-bold flex items-center text-orange-400">
+                        <MapPin className="w-3.5 h-3.5 mr-1" /> GPS Service Hub
+                      </span>
+                      <span className="text-slate-400 text-[10px]">{locationCoords.lat}, {locationCoords.lng}</span>
+                    </div>
+                    <div className="h-28 rounded-lg bg-[#0c0e12] flex flex-col items-center justify-center text-center p-3">
+                      <MapPin className="w-6 h-6 text-orange-400 animate-bounce mb-1" />
+                      <p className="text-xs text-slate-300 font-bold">Bengaluru Central Hub</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <label className="block text-xs font-bold uppercase text-slate-400">Doorstep Service Address</label>
-                <textarea
-                  rows={3}
-                  placeholder="Flat/House No., Street Name, Apartment, Society..."
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  className="w-full p-3.5 rounded-xl bg-[#181a24] border border-white/10 text-white placeholder-slate-600 text-sm focus:border-amber-400 focus:outline-none"
-                />
+              <div className="mt-8 pt-6 border-t border-white/10 flex justify-between">
+                <button onClick={() => setStep(3)} className="btn-glass-pill px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2">
+                  <ArrowLeft className="w-4 h-4" /> <span>Back</span>
+                </button>
+                <button onClick={() => setStep(5)} className="btn-copper-pill px-7 py-2.5 rounded-xl text-xs font-black flex items-center gap-2">
+                  <span>Review Summary</span> <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
 
-                <div className="border border-white/10 rounded-2xl overflow-hidden bg-[#181a24] p-4 text-white">
-                  <div className="flex items-center justify-between text-xs mb-3">
-                    <span className="font-bold flex items-center text-amber-400">
-                      <MapPin className="w-4 h-4 mr-1 text-amber-400" /> GPS Service Dispatch Hub
+          {/* STEP 5: PRICING BREAKDOWN & PAYMENT TRIGGER */}
+          {step === 5 && (
+            <div className="bg-[#12141a] rounded-3xl border border-white/10 p-6 sm:p-10 shadow-2xl max-w-2xl mx-auto">
+              <h3 className="text-xl font-black text-white mb-2 flex items-center gap-2.5">
+                <FileCheck className="w-5 h-5 text-orange-400" />
+                Step 5: Upfront Pricing & Checkout
+              </h3>
+
+              <div className="bg-[#181a24] border border-white/10 rounded-2xl p-5 my-6 space-y-3 text-xs">
+                <div className="flex justify-between border-b border-white/5 pb-2">
+                  <span className="text-slate-400">Vehicle:</span>
+                  <span className="font-bold text-white">
+                    {isCustomVehicle ? `${customMake} ${customModel}` : `${selectedMake} ${selectedModel?.name}`}
+                  </span>
+                </div>
+                <div className="flex justify-between border-b border-white/5 pb-2">
+                  <span className="text-slate-400">Package:</span>
+                  <span className="font-bold text-orange-400">{selectedPkg?.name} (₹{basePrice})</span>
+                </div>
+                <div className="flex justify-between border-b border-white/5 pb-2">
+                  <span className="text-slate-400">Engine Oil:</span>
+                  <span className="font-bold text-white">{selectedOil?.brand} (+₹{oilUpgradeCost})</span>
+                </div>
+                <div className="flex justify-between border-b border-white/5 pb-2">
+                  <span className="text-slate-400">Schedule:</span>
+                  <span className="font-bold text-white">{bookingDate} | {timeSlot}</span>
+                </div>
+
+                <div className="pt-2 space-y-1 text-slate-400">
+                  <div className="flex justify-between"><span>Base:</span> <span className="text-white">₹{basePrice}</span></div>
+                  <div className="flex justify-between"><span>Oil Upgrade:</span> <span className="text-white">+ ₹{oilUpgradeCost}</span></div>
+                  <div className="flex justify-between"><span>GST (18%):</span> <span className="text-white">+ ₹{gstAmount}</span></div>
+                  <div className="flex justify-between text-base font-black text-white border-t border-white/10 pt-2 mt-2">
+                    <span>Total Amount:</span> <span className="text-orange-400 font-mono">₹{totalPrice}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-between">
+                <button onClick={() => setStep(4)} className="btn-glass-pill px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2">
+                  <ArrowLeft className="w-4 h-4" /> <span>Back</span>
+                </button>
+                <button
+                  onClick={() => setShowRazorpay(true)}
+                  className="btn-copper-pill px-8 py-3 rounded-xl text-xs font-black flex items-center gap-2 shadow-lg"
+                >
+                  <span>Pay & Confirm (₹{totalPrice})</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 6: CONFIRMATION & LIVE TRACKING */}
+          {step === 6 && createdBooking && (
+            <div className="max-w-2xl mx-auto bg-[#12141a] rounded-3xl border border-orange-500/30 p-8 shadow-2xl text-center">
+              <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-10 h-10" />
+              </div>
+              <h3 className="text-2xl font-black text-white">Booking Confirmed! #{createdBooking.id}</h3>
+              <p className="text-xs text-slate-400 mt-1 mb-6">
+                Service OTP: <strong className="font-mono text-orange-400 text-sm px-2 py-0.5 bg-orange-500/10 rounded-md">{createdBooking.otp}</strong>
+              </p>
+
+              {createdBooking.mechanic && (
+                <div className="bg-[#181a24] border border-white/10 rounded-2xl p-5 mb-6 text-left">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs text-orange-400 font-bold uppercase flex items-center gap-1">
+                      <UserCheck className="w-3.5 h-3.5" /> Assigned Mechanic
                     </span>
-                    <span className="text-slate-400 font-mono text-[11px]">{locationCoords.lat}, {locationCoords.lng}</span>
+                    <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-bold">
+                      {createdBooking.mechanic.kycStatus} KYC
+                    </span>
                   </div>
-                  <div className="h-32 rounded-xl bg-[#0e1015] flex flex-col items-center justify-center border border-white/5 text-center p-4">
-                    <MapPin className="w-7 h-7 text-[#e58a13] animate-bounce mb-1" />
-                    <p className="text-xs text-slate-300 font-bold">Koramangala / Indiranagar Tech Hub</p>
-                    <span className="text-[10px] text-emerald-400 font-semibold mt-0.5">● Active Mechanics on Patrol</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-10 pt-6 border-t border-white/10 flex justify-between">
-              <button onClick={() => setStep(3)} className="btn-outline-garage px-6 py-3 rounded-xl text-xs font-bold flex items-center gap-2">
-                <ArrowLeft className="w-4 h-4" /> <span>Back</span>
-              </button>
-              <button onClick={() => setStep(5)} className="btn-amber-glow px-8 py-3 rounded-xl text-xs font-black flex items-center gap-2">
-                <span>Review Order Summary</span> <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* STEP 5: PRICING BREAKDOWN & PAYMENT TRIGGER */}
-        {step === 5 && (
-          <div className="bg-[#12141c] rounded-3xl border border-white/10 p-6 sm:p-10 shadow-2xl max-w-3xl mx-auto">
-            <h2 className="text-2xl font-black text-white mb-2 flex items-center gap-3">
-              <FileCheck className="w-6 h-6 text-[#e58a13]" />
-              Step 5: Upfront Pricing & Checkout
-            </h2>
-            <p className="text-xs text-slate-400 mb-6">
-              Zero hidden costs. 100% digital transparent billing backed by verified parts.
-            </p>
-
-            <div className="bg-[#181a24] border border-white/10 rounded-2xl p-6 my-6 space-y-4 text-sm">
-              <div className="flex justify-between border-b border-white/10 pb-3">
-                <span className="text-slate-400">Vehicle</span>
-                <span className="font-extrabold text-white">
-                  {isCustomVehicle ? `${customMake} ${customModel}` : `${selectedMake} ${selectedModel?.name}`}
-                </span>
-              </div>
-              <div className="flex justify-between border-b border-white/10 pb-3">
-                <span className="text-slate-400">Service Package</span>
-                <span className="font-extrabold text-[#e58a13]">{selectedPkg?.name} (₹{basePrice})</span>
-              </div>
-              <div className="flex justify-between border-b border-white/10 pb-3">
-                <span className="text-slate-400">Engine Oil</span>
-                <span className="font-extrabold text-white">{selectedOil?.brand} (+₹{oilUpgradeCost})</span>
-              </div>
-              <div className="flex justify-between border-b border-white/10 pb-3">
-                <span className="text-slate-400">Scheduled Slot</span>
-                <span className="font-bold text-white">{bookingDate} | {timeSlot}</span>
-              </div>
-
-              <div className="pt-2 space-y-2 text-xs text-slate-400">
-                <div className="flex justify-between"><span>Base Subtotal:</span> <span className="text-white font-mono">₹{basePrice}</span></div>
-                <div className="flex justify-between"><span>Oil Upgrade:</span> <span className="text-white font-mono">+ ₹{oilUpgradeCost}</span></div>
-                <div className="flex justify-between"><span>GST (18%):</span> <span className="text-white font-mono">+ ₹{gstAmount}</span></div>
-                <div className="flex justify-between text-lg font-black text-white border-t border-white/10 pt-3 mt-3">
-                  <span>Total Amount:</span> <span className="text-[#e58a13] font-mono">₹{totalPrice}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-between">
-              <button onClick={() => setStep(4)} className="btn-outline-garage px-6 py-3 rounded-xl text-xs font-bold flex items-center gap-2">
-                <ArrowLeft className="w-4 h-4" /> <span>Back</span>
-              </button>
-              <button
-                onClick={() => setShowRazorpay(true)}
-                className="btn-amber-glow px-8 py-3.5 rounded-xl text-sm font-black flex items-center gap-2 shadow-xl shadow-amber-500/20"
-              >
-                <span>Pay & Confirm Booking (₹{totalPrice})</span>
-                <ArrowRight className="w-5 h-5 stroke-[2.5]" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* STEP 6: CONFIRMATION & LIVE TRACKING */}
-        {step === 6 && createdBooking && (
-          <div className="max-w-3xl mx-auto bg-[#12141c] rounded-3xl border border-amber-500/30 p-8 sm:p-12 shadow-2xl text-center">
-            <div className="w-20 h-20 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/10">
-              <CheckCircle className="w-12 h-12 stroke-[2.5]" />
-            </div>
-            <h2 className="text-3xl font-black text-white">Booking Confirmed! #{createdBooking.id}</h2>
-            <p className="text-sm text-slate-300 mt-2 mb-8">
-              Service Handover OTP: <strong className="font-mono text-[#e58a13] text-lg px-2 py-0.5 bg-amber-500/10 rounded-lg border border-amber-500/30">{createdBooking.otp}</strong>
-            </p>
-
-            {createdBooking.mechanic && (
-              <div className="bg-[#181a24] border border-white/10 rounded-2xl p-6 mb-8 text-left">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs text-[#e58a13] font-bold uppercase flex items-center gap-1.5">
-                    <UserCheck className="w-4 h-4 text-[#e58a13]" /> Assigned Verified Mechanic
-                  </span>
-                  <span className="text-[11px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3 py-0.5 rounded-full font-bold">
-                    {createdBooking.mechanic.kycStatus} KYC
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <img src={createdBooking.mechanic.avatar} alt={createdBooking.mechanic.name} className="w-14 h-14 rounded-full object-cover border-2 border-amber-500" />
-                    <div>
-                      <h4 className="font-black text-lg text-white">{createdBooking.mechanic.name}</h4>
-                      <span className="text-xs text-slate-400">★ {createdBooking.mechanic.rating} Rating • {createdBooking.mechanic.jobsCompleted} Jobs</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <img src={createdBooking.mechanic.avatar} alt={createdBooking.mechanic.name} className="w-12 h-12 rounded-full object-cover border border-orange-500" />
+                      <div>
+                        <h4 className="font-black text-sm text-white">{createdBooking.mechanic.name}</h4>
+                        <span className="text-xs text-slate-400">★ {createdBooking.mechanic.rating} Rating</span>
+                      </div>
                     </div>
+
+                    <button
+                      onClick={() => setShowLiveTracking(true)}
+                      className="btn-copper-pill px-4 py-2 rounded-xl text-xs font-black flex items-center gap-1.5"
+                    >
+                      <Navigation className="w-3.5 h-3.5" />
+                      <span>Live Tracking</span>
+                    </button>
                   </div>
-
-                  <button
-                    onClick={() => setShowLiveTracking(true)}
-                    className="btn-amber-glow px-4 py-2.5 rounded-xl text-xs font-black flex items-center gap-1.5"
-                  >
-                    <Navigation className="w-4 h-4 stroke-[2.5]" />
-                    <span>Live Tracking</span>
-                  </button>
                 </div>
-              </div>
-            )}
+              )}
 
-            <button
-              onClick={() => setStep(1)}
-              className="btn-outline-garage px-8 py-3.5 rounded-xl text-xs font-bold"
-            >
-              Book Another Service
-            </button>
-          </div>
-        )}
+              <button
+                onClick={() => setStep(1)}
+                className="btn-glass-pill px-6 py-2.5 rounded-xl text-xs font-bold"
+              >
+                Book Another Service
+              </button>
+            </div>
+          )}
 
+        </div>
       </section>
 
       {/* Razorpay Modal */}

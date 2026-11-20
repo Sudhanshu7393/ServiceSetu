@@ -5,90 +5,72 @@
 @layer base {
   body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: #0b0c10;
+    background-color: #060709;
     color: #e2e8f0;
     overflow-x: hidden;
   }
 }
 
-/* Custom Automotive Dark Theme Utilities */
-.bg-garage-dark {
-  background-color: #0b0c10;
+/* Custom Cinematic Dark Theme Utilities (Matching Reference UI) */
+.bg-cinema-black {
+  background-color: #060709;
 }
 
-.bg-garage-card {
-  background: #13151b;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.bg-cinema-dark {
+  background-color: #0c0e12;
 }
 
-.bg-garage-card-hover {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.bg-cinema-card {
+  background-color: #12141a;
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.bg-garage-card-hover:hover {
-  background: #181a22;
-  border-color: rgba(245, 158, 11, 0.4);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px -10px rgba(245, 158, 11, 0.15);
+.bg-cinema-card:hover {
+  border-color: rgba(249, 115, 22, 0.35);
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.8), 0 0 24px -6px rgba(249, 115, 22, 0.15);
 }
 
-/* Amber Glowing Elements */
-.text-amber-glow {
-  color: #f59e0b;
-  text-shadow: 0 0 25px rgba(245, 158, 11, 0.4);
+/* Copper / Amber Flame Gradient */
+.text-copper-glow {
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ea580c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.btn-amber-glow {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  color: #0b0c10;
+.btn-copper-pill {
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 60%, #ea580c 100%);
+  color: #08090b;
   font-weight: 800;
-  box-shadow: 0 6px 20px -2px rgba(245, 158, 11, 0.45);
-  transition: all 0.25s ease;
+  box-shadow: 0 4px 20px -2px rgba(249, 115, 22, 0.4);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.btn-amber-glow:hover {
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-  box-shadow: 0 8px 28px 0 rgba(245, 158, 11, 0.6);
+.btn-copper-pill:hover {
+  background: linear-gradient(135deg, #fed7aa 0%, #fb923c 50%, #f97316 100%);
+  box-shadow: 0 6px 28px 0 rgba(249, 115, 22, 0.6);
   transform: translateY(-1px);
 }
 
-.btn-outline-garage {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1.5px solid rgba(255, 255, 255, 0.3);
+.btn-glass-pill {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
-  transition: all 0.25s ease;
+  font-weight: 700;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.btn-outline-garage:hover {
-  border-color: #f59e0b;
-  color: #f59e0b;
-  background: rgba(245, 158, 11, 0.08);
+.btn-glass-pill:hover {
+  border-color: #f97316;
+  color: #fb923c;
+  background: rgba(249, 115, 22, 0.08);
 }
 
-/* Iconic Hero Arch Framing from Reference */
-.hero-arch-frame {
-  position: relative;
-  border: 5px solid #d97706;
-  border-bottom: none;
-  border-top-left-radius: 9999px;
-  border-top-right-radius: 9999px;
-  box-shadow: 0 0 60px rgba(217, 119, 6, 0.25), inset 0 0 40px rgba(217, 119, 6, 0.15);
+/* The Cinematic Horizon Light Beam (Exact from Reference Hero) */
+.horizon-glow-line {
+  background: radial-gradient(ellipse at center, rgba(234, 88, 12, 0.45) 0%, rgba(234, 88, 12, 0.15) 45%, transparent 75%);
+  filter: blur(28px);
 }
 
-/* Diagonal Speed Chevrons Background */
-.chevron-stripes {
-  background: repeating-linear-gradient(
-    -45deg,
-    transparent,
-    transparent 20px,
-    rgba(255, 255, 255, 0.03) 20px,
-    rgba(255, 255, 255, 0.03) 60px
-  );
-}
-
-/* Glass Card */
-.glass-dark {
-  background: rgba(18, 20, 26, 0.85);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.horizon-floor {
+  background: linear-gradient(180deg, rgba(234, 88, 12, 0.12) 0%, rgba(6, 7, 9, 0) 100%);
 }

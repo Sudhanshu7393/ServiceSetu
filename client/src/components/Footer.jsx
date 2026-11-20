@@ -1,123 +1,116 @@
-import React from 'react';
-import { ShieldCheck, MapPin, CheckCircle2, Phone, Mail, Bike, Award, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import { Bike, Mail, Phone, MapPin, Send, CheckCircle2 } from 'lucide-react';
 
 export default function Footer() {
-  return (
-    <footer className="bg-[#08090b] text-slate-400 border-t border-white/10 text-sm mt-20 relative overflow-hidden">
-      
-      {/* Background ambient light */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-24 bg-amber-500/5 blur-3xl pointer-events-none" />
+  const [subscribed, setSubscribed] = useState(false);
+  const [emailInput, setEmailInput] = useState('');
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    if (emailInput.trim()) {
+      setSubscribed(true);
+      setEmailInput('');
+    }
+  };
+
+  return (
+    <footer className="bg-[#040507] text-slate-400 border-t border-white/5 text-sm pt-20 pb-12 relative overflow-hidden">
+      
+      {/* Background ambient lighting */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-32 bg-orange-500/5 blur-3xl pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12 pb-16 border-b border-white/5">
           
-          {/* Brand Info */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-500 text-slate-950 font-black flex items-center justify-center shadow-lg shadow-amber-500/20">
-                <Bike className="w-5 h-5 stroke-[2.5]" />
+          {/* Column 1: Brand & Bio (4 cols) */}
+          <div className="md:col-span-4 space-y-4">
+            <div className="flex items-center space-x-2.5">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-slate-950 font-black">
+                <Bike className="w-4 h-4 stroke-[2.5]" />
               </div>
-              <span className="font-black text-2xl text-white tracking-tight">
-                Service<span className="text-amber-400">Setu</span>
+              <span className="font-black text-2xl tracking-tight text-white">
+                Service<span className="text-orange-500">Setu</span>
               </span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              India's premier proof-backed doorstep two-wheeler service. Certified mechanics, 100% genuine barcode-verified parts, live video proof, and 7-day satisfaction warranty.
+            <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
+              Crafting the future of two-wheeler servicing with precision doorstep mechanics, anti-counterfeit barcode audits, and uncompromising customer transparency.
             </p>
-            <div className="flex items-center space-x-2 text-amber-400 text-xs font-bold bg-amber-500/10 border border-amber-500/20 px-3 py-2 rounded-xl inline-flex">
-              <ShieldCheck className="w-4 h-4 text-amber-400" />
-              <span>7-Day Free Redo Guarantee</span>
-            </div>
           </div>
 
-          {/* Operating Cities */}
-          <div>
-            <h4 className="text-white font-extrabold text-sm uppercase tracking-wider mb-4 flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-amber-400" />
-              Operating Cities
-            </h4>
-            <ul className="space-y-2.5 text-xs text-slate-400">
-              <li className="hover:text-amber-400 transition-colors cursor-pointer">Bengaluru (Koramangala, Indiranagar, HSR, Whitefield)</li>
-              <li className="hover:text-amber-400 transition-colors cursor-pointer">Delhi NCR (Gurugram, Noida, South Delhi)</li>
-              <li className="hover:text-amber-400 transition-colors cursor-pointer">Mumbai (Andheri, Bandra, Thane, Navi Mumbai)</li>
-              <li className="hover:text-amber-400 transition-colors cursor-pointer">Pune & Hyderabad (Expansion Active)</li>
+          {/* Column 2: Navigation (2 cols) */}
+          <div className="md:col-span-2">
+            <h4 className="text-white font-bold text-xs uppercase tracking-wider mb-4">Navigation</h4>
+            <ul className="space-y-2.5 text-xs">
+              <li><a href="#signature-packages-section" className="hover:text-white transition-colors">Service Models</a></li>
+              <li><a href="#about-section" className="hover:text-white transition-colors">About Us</a></li>
+              <li><a href="#features-section" className="hover:text-white transition-colors">Performance Standards</a></li>
+              <li><a href="#reviews-section" className="hover:text-white transition-colors">Rider Reviews</a></li>
             </ul>
           </div>
 
-          {/* Trust Standards */}
-          <div>
-            <h4 className="text-white font-extrabold text-sm uppercase tracking-wider mb-4 flex items-center gap-2">
-              <Award className="w-4 h-4 text-amber-400" />
-              Trust Standards
-            </h4>
-            <ul className="space-y-2.5 text-xs text-slate-400">
-              <li className="flex items-center space-x-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-                <span>Barcode Scanned Genuine Engine Oils</span>
+          {/* Column 3: Contact (3 cols) */}
+          <div className="md:col-span-3">
+            <h4 className="text-white font-bold text-xs uppercase tracking-wider mb-4">Contact</h4>
+            <ul className="space-y-2.5 text-xs">
+              <li className="flex items-center space-x-2 text-slate-300">
+                <Mail className="w-3.5 h-3.5 text-orange-400 flex-shrink-0" />
+                <span>support@servicesetu.in</span>
               </li>
-              <li className="flex items-center space-x-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-                <span>Before & After Digital Proof Cards</span>
+              <li className="flex items-center space-x-2 text-slate-300">
+                <Phone className="w-3.5 h-3.5 text-orange-400 flex-shrink-0" />
+                <span>1-800-SETU-BIKE (Toll Free)</span>
               </li>
-              <li className="flex items-center space-x-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-                <span>Odometer & Battery Voltage Health Audit</span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-                <span>Customer OTP Handover Verification</span>
+              <li className="flex items-start space-x-2 text-slate-400">
+                <MapPin className="w-3.5 h-3.5 text-orange-400 flex-shrink-0 mt-0.5" />
+                <span>Koramangala 4th Block, Bengaluru, KA 560034</span>
               </li>
             </ul>
           </div>
 
-          {/* Customer Helpline */}
-          <div>
-            <h4 className="text-white font-extrabold text-sm uppercase tracking-wider mb-4 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-400" />
-              24/7 Support Desk
-            </h4>
+          {/* Column 4: Newsletter (3 cols) */}
+          <div className="md:col-span-3">
+            <h4 className="text-white font-bold text-xs uppercase tracking-wider mb-2">Newsletter</h4>
             <p className="text-xs text-slate-400 mb-4">
-              Need instant breakdown help or service guidance?
+              Stay updated with our latest offers, genuine parts drops & maintenance alerts.
             </p>
-            <div className="space-y-3 text-xs">
-              <a 
-                href="tel:1800-SETU-BIKE" 
-                className="flex items-center space-x-3 bg-white/5 border border-white/10 hover:border-amber-500/40 p-3 rounded-2xl transition-all group"
-              >
-                <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-slate-950 transition-colors">
-                  <Phone className="w-4 h-4" />
-                </div>
-                <div>
-                  <span className="block text-slate-400 text-[10px]">Toll-Free Helpline</span>
-                  <strong className="text-white font-bold group-hover:text-amber-400">+91 1800-SETU-BIKE</strong>
-                </div>
-              </a>
 
-              <a 
-                href="mailto:support@servicesetu.in" 
-                className="flex items-center space-x-3 bg-white/5 border border-white/10 hover:border-amber-500/40 p-3 rounded-2xl transition-all group"
-              >
-                <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-slate-950 transition-colors">
-                  <Mail className="w-4 h-4" />
-                </div>
-                <div>
-                  <span className="block text-slate-400 text-[10px]">Official Email</span>
-                  <strong className="text-white font-bold group-hover:text-amber-400">support@servicesetu.in</strong>
-                </div>
-              </a>
-            </div>
+            {subscribed ? (
+              <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 p-3 rounded-xl text-xs font-bold flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4" />
+                <span>Subscribed successfully!</span>
+              </div>
+            ) : (
+              <form onSubmit={handleSubscribe} className="space-y-2.5">
+                <input
+                  type="email"
+                  required
+                  placeholder="Enter your email"
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#12141a] border border-white/10 text-white placeholder-slate-600 text-xs focus:border-orange-500 focus:outline-none font-medium"
+                />
+                <button
+                  type="submit"
+                  className="w-full btn-copper-pill text-xs font-black py-2.5 rounded-xl"
+                >
+                  Subscribe
+                </button>
+              </form>
+            )}
           </div>
 
         </div>
 
-        <div className="mt-14 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-          <p>© 2026 ServiceSetu Technologies Pvt. Ltd. All rights reserved.</p>
-          <div className="flex items-center space-x-6">
-            <span className="hover:text-slate-400 cursor-pointer">Privacy Policy</span>
-            <span className="hover:text-slate-400 cursor-pointer">Terms of Service</span>
-            <span className="hover:text-slate-400 cursor-pointer">Warranty Guidelines</span>
+        {/* Bottom Bar: Copyright & Social Links */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+          <p>© 2026 ServiceSetu Inc. Built for precision two-wheeler care.</p>
+          <div className="flex items-center space-x-6 text-slate-400 text-xs">
+            <span className="hover:text-white cursor-pointer transition-colors">Privacy Policy</span>
+            <span className="hover:text-white cursor-pointer transition-colors">Terms of Service</span>
+            <span className="hover:text-white cursor-pointer transition-colors">Warranty Standards</span>
           </div>
         </div>
+
       </div>
     </footer>
   );

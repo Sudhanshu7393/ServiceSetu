@@ -2,24 +2,20 @@ import React, { useState } from 'react';
 import { 
   Bike, 
   Search, 
-  Heart, 
   ShoppingBag, 
   User, 
   LogOut, 
-  Wrench, 
-  Award, 
-  FileText, 
-  LayoutDashboard,
-  Menu,
-  X,
-  PhoneCall
+  Menu, 
+  X, 
+  PhoneCall,
+  Sparkles
 } from 'lucide-react';
 
 export default function Navbar({ currentUser, isLoginPage, activeTab, setActiveTab, onLogout, onOpenLogin, cartCount = 0 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const customerNavItems = [
-    { id: 'booking', label: 'Home' },
+    { id: 'booking', label: 'Models & Booking' },
     { id: 'services-showcase', label: 'Services', isScroll: true },
     { id: 'store', label: 'Bike Parts' },
     { id: 'amc', label: 'AMC Plans' },
@@ -48,7 +44,7 @@ export default function Navbar({ currentUser, isLoginPage, activeTab, setActiveT
     if (item.isScroll) {
       setActiveTab('booking');
       setTimeout(() => {
-        const el = document.getElementById('services-section');
+        const el = document.getElementById('signature-packages-section');
         if (el) el.scrollIntoView({ behavior: 'smooth' });
       }, 100);
     } else {
@@ -58,55 +54,47 @@ export default function Navbar({ currentUser, isLoginPage, activeTab, setActiveT
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-[#0b0c10]/95 backdrop-blur-md border-b border-white/5 text-white">
+    <header className="sticky top-0 z-50 bg-[#060709]/90 backdrop-blur-xl border-b border-white/5 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
-          {/* Brand Logo - MotoFix / ServiceSetu Style matching Reference */}
+          {/* Brand Logo - Reference MOTO Style */}
           <div 
-            className="flex items-center space-x-3 cursor-pointer group"
+            className="flex items-center space-x-2.5 cursor-pointer group"
             onClick={() => {
               if (currentUser && !isLoginPage) {
                 setActiveTab(currentUser.role === 'mechanic' ? 'mechanic' : currentUser.role === 'admin' ? 'admin' : 'booking');
               }
             }}
           >
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-amber-500/25 group-hover:scale-105 transition-transform">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-orange-500/25 group-hover:scale-105 transition-transform">
               <Bike className="w-5 h-5 stroke-[2.5]" />
             </div>
-            <div>
-              <div className="flex items-center space-x-2">
-                <span className="font-black text-2xl tracking-tight text-white">
-                  Service<span className="text-amber-400">Setu</span>
-                </span>
-                <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-md hidden sm:inline-block">
-                  Garage
-                </span>
-              </div>
-              <p className="text-[10px] text-slate-400 font-medium hidden sm:block">
-                Professional Two-Wheeler Care & Repair
-              </p>
+            <div className="flex items-baseline space-x-1">
+              <span className="font-black text-2xl tracking-tight text-white">
+                Service<span className="text-orange-500">Setu</span>
+              </span>
             </div>
           </div>
 
-          {/* Center Navigation Links - Clean Minimal Reference Style */}
+          {/* Center Navigation Links - Reference Style: Clean, Spaced, Subtle */}
           {!isLoginPage && (
-            <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
+            <nav className="hidden lg:flex items-center space-x-8">
               {navItems.map(item => {
                 const isActive = activeTab === item.id;
                 return (
                   <button
                     key={item.id}
                     onClick={() => handleNavClick(item)}
-                    className={`text-sm font-semibold transition-colors relative py-2 cursor-pointer ${
+                    className={`text-sm tracking-wide transition-all relative py-1 cursor-pointer font-medium ${
                       isActive 
-                        ? 'text-amber-400 font-bold' 
-                        : 'text-slate-300 hover:text-white'
+                        ? 'text-white font-bold' 
+                        : 'text-slate-400 hover:text-white'
                     }`}
                   >
                     <span>{item.label}</span>
                     {isActive && (
-                      <span className="absolute bottom-0 left-0 w-full h-[2px] bg-amber-400 rounded-full" />
+                      <span className="absolute -bottom-1 left-0 w-full h-[2px] bg-orange-500 rounded-full" />
                     )}
                   </button>
                 );
@@ -114,10 +102,10 @@ export default function Navbar({ currentUser, isLoginPage, activeTab, setActiveT
             </nav>
           )}
 
-          {/* Right Action Icons matching Reference Header */}
-          <div className="flex items-center space-x-3 sm:space-x-4">
+          {/* Right Action Bar */}
+          <div className="flex items-center space-x-4">
             
-            {/* Search Icon */}
+            {/* Minimal Search Button */}
             <button 
               onClick={() => {
                 setActiveTab('booking');
@@ -127,61 +115,54 @@ export default function Navbar({ currentUser, isLoginPage, activeTab, setActiveT
                 }, 100);
               }}
               title="Search Models & Services"
-              className="p-2 text-slate-300 hover:text-amber-400 transition-colors"
+              className="p-2 text-slate-300 hover:text-orange-400 transition-colors cursor-pointer"
             >
-              <Search className="w-5 h-5" />
+              <Search className="w-4 h-4" />
             </button>
 
-            {/* Wishlist / Favorites Heart Icon */}
+            {/* Shopping Cart Icon with Red Pill Badge */}
             <button 
               onClick={() => setActiveTab('store')}
-              title="Saved Items"
-              className="p-2 text-slate-300 hover:text-amber-400 transition-colors hidden sm:block"
+              title="Genuine Parts Cart"
+              className="relative p-2 text-slate-300 hover:text-orange-400 transition-colors cursor-pointer"
             >
-              <Heart className="w-5 h-5" />
+              <ShoppingBag className="w-4 h-4" />
+              {cartCount > 0 && (
+                <span className="absolute 0 top-0.5 right-0.5 w-4 h-4 rounded-full bg-orange-500 text-slate-950 text-[9px] font-black flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
             </button>
 
-            {/* Shopping Cart Icon with Red/Amber Badge */}
-            <button 
-              onClick={() => setActiveTab('store')}
-              title="Cart"
-              className="relative p-2 text-slate-300 hover:text-amber-400 transition-colors"
+            {/* Primary Order Now Button (Exact shape from Reference) */}
+            <button
+              onClick={() => {
+                setActiveTab('booking');
+                setTimeout(() => {
+                  const el = document.getElementById('booking-flow-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+              }}
+              className="btn-copper-pill text-xs font-black px-5 py-2.5 rounded-full tracking-wide shadow-md hidden sm:inline-flex items-center gap-1.5 cursor-pointer"
             >
-              <ShoppingBag className="w-5 h-5" />
-              <span className="absolute 0 top-0.5 right-0.5 w-4 h-4 rounded-full bg-red-600 text-white text-[9px] font-black flex items-center justify-center">
-                {cartCount > 0 ? cartCount : '1'}
-              </span>
+              <span>Order Now</span>
             </button>
 
             {/* User Profile / Status */}
-            {isLoginPage ? (
-              <span className="text-xs text-amber-400 font-bold bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-xl">
-                Login Required
-              </span>
-            ) : currentUser ? (
-              <div className="flex items-center space-x-2.5 bg-[#14161f] border border-white/10 px-3 py-1.5 rounded-2xl text-xs">
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 font-black flex items-center justify-center text-xs">
-                  {currentUser.avatar?.length === 2 ? currentUser.avatar : <User className="w-4 h-4" />}
+            {currentUser && !isLoginPage && (
+              <div className="flex items-center space-x-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-xs">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 text-slate-950 font-black flex items-center justify-center text-[10px]">
+                  {currentUser.avatar?.length === 2 ? currentUser.avatar : <User className="w-3.5 h-3.5" />}
                 </div>
-                <div className="hidden md:block text-left">
-                  <span className="font-extrabold text-white block text-xs leading-none">{currentUser.name}</span>
-                  <span className="text-[10px] text-amber-400 font-bold capitalize">{currentUser.role}</span>
-                </div>
+                <span className="text-white font-bold hidden md:inline">{currentUser.name?.split(' ')[0]}</span>
                 <button
                   onClick={onLogout}
                   title="Logout"
-                  className="p-1 text-slate-400 hover:text-red-400 rounded-lg transition-colors ml-1"
+                  className="p-1 text-slate-400 hover:text-red-400 rounded-full transition-colors"
                 >
-                  <LogOut className="w-4 h-4" />
+                  <LogOut className="w-3.5 h-3.5" />
                 </button>
               </div>
-            ) : (
-              <button
-                onClick={onOpenLogin}
-                className="btn-amber-glow text-xs font-black px-4 py-2 rounded-xl"
-              >
-                Sign In
-              </button>
             )}
 
             {/* Mobile Hamburger Toggle */}
@@ -189,7 +170,7 @@ export default function Navbar({ currentUser, isLoginPage, activeTab, setActiveT
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 text-slate-400 hover:text-white lg:hidden rounded-xl"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
           </div>
@@ -199,21 +180,19 @@ export default function Navbar({ currentUser, isLoginPage, activeTab, setActiveT
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#111318] border-b border-white/10 px-4 py-4 space-y-2">
+        <div className="lg:hidden bg-[#0c0e12] border-b border-white/10 px-6 py-5 space-y-3">
           {navItems.map(item => {
             const isActive = activeTab === item.id;
             return (
               <button
                 key={item.id}
                 onClick={() => handleNavClick(item)}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold ${
-                  isActive 
-                    ? 'bg-amber-500/10 text-amber-400' 
-                    : 'text-slate-300 hover:bg-white/5'
+                className={`w-full flex items-center justify-between py-2 text-sm font-semibold ${
+                  isActive ? 'text-orange-500 font-bold' : 'text-slate-300'
                 }`}
               >
                 <span>{item.label}</span>
-                {isActive && <span className="w-2 h-2 rounded-full bg-amber-400" />}
+                {isActive && <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />}
               </button>
             );
           })}
