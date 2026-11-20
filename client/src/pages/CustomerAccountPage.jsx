@@ -10,7 +10,9 @@ import {
   ShieldCheck, 
   Download,
   Calendar,
-  CheckCircle2
+  CheckCircle2,
+  Wrench,
+  Award
 } from 'lucide-react';
 
 export default function CustomerAccountPage() {
@@ -33,127 +35,178 @@ export default function CustomerAccountPage() {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      
-      {/* Profile Header */}
-      <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-xl mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center space-x-4">
-          <div className="w-16 h-16 rounded-2xl bg-teal-500 text-slate-950 flex items-center justify-center font-bold text-2xl">
-            AP
-          </div>
-          <div>
-            <div className="flex items-center space-x-2">
-              <h1 className="text-2xl font-extrabold">Amit Patel</h1>
-              <span className="bg-teal-950 text-teal-300 border border-teal-800 text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full">
-                Gold Member
-              </span>
-            </div>
-            <p className="text-xs text-slate-400 mt-1">+91 98200 12345 • Bengaluru, India</p>
-          </div>
-        </div>
-
-        <div className="bg-slate-800/80 border border-slate-700/60 px-4 py-3 rounded-2xl text-xs flex items-center space-x-3">
-          <ShieldCheck className="w-5 h-5 text-emerald-400" />
-          <div>
-            <span className="font-bold text-white block">Proof-Backed Guarantee</span>
-            <span className="text-slate-400 text-[11px]">100% Verified Barcode History</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="min-h-screen bg-[#0b0c10] text-slate-100 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Left Column: Digital Garage & Health Score */}
-        <div className="space-y-6">
-          <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
-            <h3 className="font-extrabold text-base text-slate-900 mb-4 flex items-center">
-              <Bike className="w-5 h-5 text-teal-600 mr-2" /> Digital Garage (Saved Vehicles)
-            </h3>
-
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-extrabold text-sm text-slate-900">Royal Enfield Classic 350</span>
-                <span className="text-[10px] font-bold uppercase bg-teal-100 text-teal-800 px-2 py-0.5 rounded">Primary</span>
+        {/* Profile Header */}
+        <div className="bg-[#12141c] text-white rounded-3xl p-6 sm:p-8 border border-white/10 shadow-2xl mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center space-x-4">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 flex items-center justify-center font-black text-2xl shadow-lg shadow-amber-500/20">
+              AP
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <h1 className="text-2xl font-black text-white">Amit Patel</h1>
+                <span className="bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full">
+                  Gold Club Rider
+                </span>
               </div>
-              <p className="text-xs text-slate-500">Reg No: KA-05-MH-8812 • 349cc</p>
-              
-              {/* Health Score Bars */}
-              <div className="mt-4 pt-3 border-t border-slate-200 space-y-2.5 text-xs">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="font-bold text-slate-700 flex items-center"><HeartPulse className="w-3.5 h-3.5 text-emerald-600 mr-1" /> Vehicle Health Score</span>
-                  <span className="font-extrabold text-emerald-600">88% (Excellent)</span>
-                </div>
-
-                <div>
-                  <div className="flex justify-between text-[11px] text-slate-500 mb-1"><span>Engine Oil Health:</span> <span>95% (Fresh Synthetic)</span></div>
-                  <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                    <div className="w-[95%] h-full bg-emerald-500"></div>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between text-[11px] text-slate-500 mb-1"><span>Brake Pad Life:</span> <span>65%</span></div>
-                  <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                    <div className="w-[65%] h-full bg-teal-500"></div>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between text-[11px] text-slate-500 mb-1"><span>Spark Plug & Air Filter:</span> <span>80%</span></div>
-                  <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                    <div className="w-[80%] h-full bg-teal-500"></div>
-                  </div>
-                </div>
-              </div>
-
+              <p className="text-xs text-slate-400 mt-1 font-medium">+91 98200 12345 • Koramangala, Bengaluru</p>
             </div>
           </div>
 
-          {/* Service Reminders Widget */}
-          <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
-            <h3 className="font-extrabold text-base text-slate-900 mb-4 flex items-center">
-              <Bell className="w-5 h-5 text-teal-600 mr-2" /> Automated Maintenance Reminders
-            </h3>
-
-            <div className="p-4 rounded-2xl bg-teal-50 border border-teal-100 text-xs text-teal-900 space-y-1">
-              <span className="font-bold block flex items-center"><Calendar className="w-3.5 h-3.5 mr-1 text-teal-700" /> Next Doorstep Service Due</span>
-              <p>Estimated in ~90 days or at 18,000 km odometer reading.</p>
+          <div className="bg-[#181a24] border border-white/10 px-4 py-3 rounded-2xl text-xs flex items-center space-x-3">
+            <ShieldCheck className="w-6 h-6 text-amber-400" />
+            <div>
+              <span className="font-bold text-white block">Proof-Backed Guarantee</span>
+              <span className="text-slate-400 text-[11px]">100% Verified Barcode History</span>
             </div>
           </div>
         </div>
 
-        {/* Right Column: Service History & Digital Invoices */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
-            <h3 className="font-extrabold text-base text-slate-900 mb-4 flex items-center">
-              <History className="w-5 h-5 text-teal-600 mr-2" /> Service History & Proof Reports
-            </h3>
+        {/* Dashboard 3 Column Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          
+          {/* Card 1: My Garage Two-Wheeler */}
+          <div className="bg-[#12141c] rounded-3xl p-6 border border-white/10 shadow-lg flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[10px] font-black uppercase text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-500/20">
+                  Registered Motorcycle
+                </span>
+                <Bike className="w-5 h-5 text-amber-400" />
+              </div>
+              <h3 className="font-black text-lg text-white">Honda CB350 H'ness</h3>
+              <p className="text-xs text-slate-400 mt-1">348cc • Reg: KA-01-MJ-8891</p>
+              
+              <div className="mt-4 pt-4 border-t border-white/5 space-y-2 text-xs">
+                <div className="flex justify-between text-slate-400">
+                  <span>Last Service:</span> <strong className="text-white">12 Oct 2026</strong>
+                </div>
+                <div className="flex justify-between text-slate-400">
+                  <span>Engine Oil Used:</span> <strong className="text-amber-400">Motul 7100 4T 10W-40</strong>
+                </div>
+                <div className="flex justify-between text-slate-400">
+                  <span>Next Service Due:</span> <strong className="text-emerald-400">Jan 2027</strong>
+                </div>
+              </div>
+            </div>
+          </div>
 
+          {/* Card 2: Vehicle Health Status */}
+          <div className="bg-[#12141c] rounded-3xl p-6 border border-white/10 shadow-lg flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[10px] font-black uppercase text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/30">
+                  Audit Score: 98/100
+                </span>
+                <HeartPulse className="w-5 h-5 text-emerald-400" />
+              </div>
+              <h3 className="font-black text-lg text-white">Digital Health Index</h3>
+              <p className="text-xs text-slate-400 mt-1">Monitored via ServiceSetu Barcode & Inspection</p>
+
+              <div className="mt-4 pt-4 border-t border-white/5 space-y-2.5 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Brake Pad Wear:</span>
+                  <span className="text-emerald-400 font-bold">Good (75% Life)</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Battery Voltage:</span>
+                  <span className="text-emerald-400 font-bold">12.6V (Optimal)</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Tyre Pressure:</span>
+                  <span className="text-white font-bold">28F / 36R PSI</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 3: AMC Subscription Status */}
+          <div className="bg-[#12141c] rounded-3xl p-6 border border-amber-500/40 shadow-lg flex flex-col justify-between relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl" />
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[10px] font-black uppercase text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-500/30">
+                  Active Subscription
+                </span>
+                <Award className="w-5 h-5 text-amber-400" />
+              </div>
+              <h3 className="font-black text-lg text-white">Gold Protection AMC</h3>
+              <p className="text-xs text-slate-400 mt-1">Valid through Oct 2027</p>
+
+              <div className="mt-4 pt-4 border-t border-white/5 space-y-2 text-xs">
+                <div className="flex justify-between text-slate-400">
+                  <span>Free Services Remaining:</span> <strong className="text-amber-400">3 of 4 Visits</strong>
+                </div>
+                <div className="flex justify-between text-slate-400">
+                  <span>Roadside SOS Dispatches:</span> <strong className="text-white">2 Emergency Passes</strong>
+                </div>
+                <div className="flex justify-between text-slate-400">
+                  <span>Spare Parts Discount:</span> <strong className="text-emerald-400">15% Off Active</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Service History Timeline */}
+        <div className="bg-[#12141c] rounded-3xl border border-white/10 p-6 sm:p-8 shadow-xl">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-2">
+              <History className="w-5 h-5 text-amber-400" />
+              <h3 className="font-black text-lg text-white">Doorstep Service History & Reports</h3>
+            </div>
+            <span className="text-xs text-slate-400 font-bold">
+              {customerBookings.length} Completed Service Audits
+            </span>
+          </div>
+
+          <div className="space-y-4">
             {customerBookings.length === 0 ? (
-              <p className="text-xs text-slate-400 italic">No previous service bookings found.</p>
+              <div className="text-center py-12 text-slate-500 text-xs">
+                No past service orders on record yet.
+              </div>
             ) : (
-              <div className="space-y-4">
-                {customerBookings.map(b => (
-                  <div key={b.id} className="p-5 border border-slate-200 rounded-2xl bg-slate-50/50 hover:bg-slate-50 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              customerBookings.map(booking => (
+                <div key={booking.id} className="bg-[#181a24] border border-white/5 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:border-amber-500/30 transition-colors">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center font-black flex-shrink-0">
+                      <Bike className="w-6 h-6" />
+                    </div>
                     <div>
                       <div className="flex items-center space-x-2">
-                        <span className="font-mono text-xs font-bold text-slate-900">{b.id}</span>
-                        <span className="text-[10px] font-extrabold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full uppercase">
-                          {b.status}
+                        <strong className="text-white font-bold text-sm">{booking.vehicle?.make} {booking.vehicle?.model}</strong>
+                        <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded font-black uppercase">
+                          {booking.status}
                         </span>
                       </div>
-                      <h4 className="font-extrabold text-slate-900 text-sm mt-1">{b.package?.name}</h4>
-                      <p className="text-xs text-slate-500 mt-0.5">{b.vehicle?.make} {b.vehicle?.model} • Oil: {b.oilOption?.brand}</p>
-                      <span className="text-[11px] text-slate-400 block mt-1">Serviced on {b.date} by {b.mechanic?.name || 'Verified Mechanic'}</span>
-                    </div>
-
-                    <div className="text-right w-full sm:w-auto border-t sm:border-0 pt-2 sm:pt-0">
-                      <span className="text-base font-extrabold text-slate-900 block">₹{b.totalPrice}</span>
-                      <span className="text-[11px] text-emerald-700 font-semibold block mb-2">Invoice Verified</span>
+                      <p className="text-xs text-slate-400 mt-1">
+                        {booking.serviceType} • OTP: <span className="font-mono text-amber-400 font-bold">{booking.otp}</span>
+                      </p>
+                      <span className="text-[11px] text-slate-500 block mt-0.5">Booking #{booking.id} • {booking.address}</span>
                     </div>
                   </div>
-                ))}
-              </div>
+
+                  <div className="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-white/5">
+                    <div className="text-left sm:text-right mr-2">
+                      <span className="text-base font-black text-amber-400 font-mono block">₹{booking.totalPrice}</span>
+                      <span className="text-[10px] text-emerald-400 font-bold">Paid & Verified</span>
+                    </div>
+
+                    <a
+                      href={`https://servicesetu-sage.vercel.app`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-outline-garage text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1"
+                    >
+                      <FileText className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Proof Audit</span>
+                    </a>
+                  </div>
+                </div>
+              ))
             )}
           </div>
         </div>

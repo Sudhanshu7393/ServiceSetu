@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { loginWithFirebaseEmail, registerWithFirebaseEmail, loginWithGooglePopup } from '../services/firebase';
 import { 
   Wrench, 
+  Bike,
   User, 
   UserCheck, 
   ShieldCheck, 
@@ -118,78 +119,87 @@ export default function LoginPage({ onLogin }) {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-slate-950 flex items-center justify-center p-4 sm:p-8">
-      <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-12 gap-0 bg-slate-900 rounded-3xl border border-slate-800 shadow-2xl overflow-hidden">
+    <div className="min-h-[calc(100vh-5rem)] bg-[#0b0c10] flex items-center justify-center p-4 sm:p-8">
+      <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-12 gap-0 bg-[#12141c] rounded-3xl border border-white/10 shadow-2xl overflow-hidden relative">
         
-        {/* LEFT COLUMN: BRAND HERO */}
-        <div className="lg:col-span-5 gradient-bg p-8 sm:p-10 text-white flex flex-col justify-between relative overflow-hidden">
-          <div className="absolute -top-10 -left-10 w-40 h-40 bg-teal-500/20 rounded-full blur-3xl"></div>
+        {/* Ambient Top Glow */}
+        <div className="absolute top-0 right-1/4 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        {/* LEFT COLUMN: BRAND HERO WITH REFERENCE MOTORCYCLE FLAVOR */}
+        <div className="lg:col-span-5 bg-gradient-to-b from-[#181a24] to-[#0e1015] p-8 sm:p-12 text-white flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-white/10 relative overflow-hidden">
+          
           <div className="relative z-10 space-y-6">
             
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-2xl bg-teal-500 text-slate-950 flex items-center justify-center font-bold text-xl shadow-lg shadow-teal-500/30">
-                <Wrench className="w-6 h-6 stroke-[2.5]" />
+              <div className="w-12 h-12 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center font-black text-xl shadow-lg shadow-amber-500/25">
+                <Bike className="w-7 h-7 stroke-[2.5]" />
               </div>
               <div>
-                <span className="font-extrabold text-2xl tracking-tight text-white block">Service<span className="text-teal-400">Setu</span></span>
-                <span className="text-[10px] uppercase font-bold tracking-widest text-teal-300">Doorstep Vehicle Servicing</span>
+                <span className="font-black text-2xl tracking-tight text-white block">
+                  Service<span className="text-amber-400">Setu</span>
+                </span>
+                <span className="text-[10px] uppercase font-black tracking-widest text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-md">
+                  Doorstep Garage
+                </span>
               </div>
             </div>
 
             <div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">
+              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white leading-tight">
                 Doorstep Servicing Brought To Your Location
               </h2>
-              <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-                Verified mechanics visit your home or office. Transparent upfront pricing, genuine spare parts, and digital proof reports.
+              <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+                Certified mechanics visit your home. Transparent upfront pricing, genuine barcode-scanned parts, and digital proof reports.
               </p>
             </div>
 
-            <div className="space-y-3 pt-2">
-              <div className="flex items-center space-x-3 text-xs bg-slate-950/40 p-3 rounded-2xl border border-white/10">
-                <CheckCircle2 className="w-5 h-5 text-teal-400 flex-shrink-0" />
+            <div className="space-y-3 pt-3">
+              <div className="flex items-center space-x-3 text-xs bg-[#12141c] p-3.5 rounded-2xl border border-white/5">
+                <CheckCircle2 className="w-5 h-5 text-amber-400 flex-shrink-0" />
                 <div>
-                  <strong className="text-white font-bold block">Verified Mechanics</strong>
-                  <span className="text-slate-300 text-[11px]">Background-checked doorstep experts</span>
+                  <strong className="text-white font-bold block">Verified Technicians</strong>
+                  <span className="text-slate-400 text-[11px]">Police verified & skill certified</span>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-3 text-xs bg-slate-950/40 p-3 rounded-2xl border border-white/10">
+              <div className="flex items-center space-x-3 text-xs bg-[#12141c] p-3.5 rounded-2xl border border-white/5">
                 <Shield className="w-5 h-5 text-emerald-400 flex-shrink-0" />
                 <div>
                   <strong className="text-white font-bold block">100% Genuine Spare Parts</strong>
-                  <span className="text-slate-300 text-[11px]">Barcode verified authentic products</span>
+                  <span className="text-slate-400 text-[11px]">Anti-counterfeit barcode verification</span>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-3 text-xs bg-slate-950/40 p-3 rounded-2xl border border-white/10">
-                <Star className="w-5 h-5 text-amber-400 flex-shrink-0" />
+              <div className="flex items-center space-x-3 text-xs bg-[#12141c] p-3.5 rounded-2xl border border-white/5">
+                <Star className="w-5 h-5 text-amber-400 fill-amber-400 flex-shrink-0" />
                 <div>
-                  <strong className="text-white font-bold block">Fixed Upfront Pricing</strong>
-                  <span className="text-slate-300 text-[11px]">Zero hidden fees or surprises</span>
+                  <strong className="text-white font-bold block">7-Day Free Redo Guarantee</strong>
+                  <span className="text-slate-400 text-[11px]">Zero hidden fees or surprises</span>
                 </div>
               </div>
             </div>
 
           </div>
 
-          <div className="relative z-10 pt-8 border-t border-white/10 flex items-center justify-between text-xs text-slate-300">
-            <span className="flex items-center font-bold"><Star className="w-4 h-4 text-amber-400 fill-amber-400 mr-1" /> 4.9 Rating</span>
-            <span>• 10,000+ Serviced Bikes</span>
+          <div className="relative z-10 pt-8 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
+            <span className="flex items-center font-bold text-white">
+              <Star className="w-4 h-4 text-amber-400 fill-amber-400 mr-1" /> 4.9 Average Rating
+            </span>
+            <span className="text-amber-400 font-bold">• 10,000+ Serviced Bikes</span>
           </div>
         </div>
 
         {/* RIGHT COLUMN: AUTHENTICATION FORM */}
-        <div className="lg:col-span-7 bg-white p-8 sm:p-12 flex flex-col justify-between">
+        <div className="lg:col-span-7 bg-[#12141c] p-8 sm:p-12 flex flex-col justify-between">
           <div>
             
             {/* Header & Mode Switcher */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-8">
               <div>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-teal-700 bg-teal-50 px-3 py-1 rounded-full inline-block mb-1">
-                  Portal Login
+                <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3 py-1 rounded-full inline-block mb-1.5">
+                  Secure Access
                 </span>
-                <h3 className="text-2xl font-extrabold text-slate-900">
+                <h3 className="text-2xl font-black text-white">
                   {authMode === 'login' ? 'Sign In to ServiceSetu' : 'Create Customer Account'}
                 </h3>
               </div>
@@ -200,7 +210,7 @@ export default function LoginPage({ onLogin }) {
                   setAuthMode(authMode === 'login' ? 'register' : 'login');
                   setErrorMsg(null);
                 }}
-                className="text-xs font-bold text-teal-600 hover:text-teal-800 bg-teal-50 px-3 py-1.5 rounded-xl border border-teal-200 transition-all"
+                className="text-xs font-bold text-amber-400 hover:text-white bg-white/5 px-3.5 py-2 rounded-xl border border-white/10 transition-all cursor-pointer"
               >
                 {authMode === 'login' ? 'Create Account' : 'Existing User? Log In'}
               </button>
@@ -208,16 +218,18 @@ export default function LoginPage({ onLogin }) {
 
             {/* Error Banner */}
             {errorMsg && (
-              <div className="mb-4 p-3.5 bg-red-50 border border-red-200 text-red-800 rounded-xl text-xs font-bold flex items-center">
-                <AlertCircle className="w-4 h-4 mr-2 text-red-600 flex-shrink-0" />
+              <div className="mb-6 p-4 bg-red-950/40 border border-red-500/40 text-red-300 rounded-2xl text-xs font-bold flex items-center">
+                <AlertCircle className="w-4 h-4 mr-2 text-red-400 flex-shrink-0" />
                 <span>{errorMsg}</span>
               </div>
             )}
 
             {/* Role Category Tabs */}
             <div className="mb-6">
-              <label className="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider">Select Login Account Category</label>
-              <div className="grid grid-cols-3 gap-2 bg-slate-100 p-1.5 rounded-2xl text-xs font-bold">
+              <label className="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                Select Account Portal
+              </label>
+              <div className="grid grid-cols-3 gap-2 bg-[#0e1015] p-1.5 rounded-2xl text-xs font-bold border border-white/5">
                 <button
                   type="button"
                   onClick={() => {
@@ -227,8 +239,8 @@ export default function LoginPage({ onLogin }) {
                   }}
                   className={`py-2.5 rounded-xl transition-all flex items-center justify-center space-x-1.5 ${
                     selectedRole === 'customer' 
-                      ? 'bg-teal-600 text-white shadow-md' 
-                      : 'text-slate-600 hover:text-slate-900'
+                      ? 'bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-500/20' 
+                      : 'text-slate-400 hover:text-white'
                   }`}
                 >
                   <User className="w-4 h-4" />
@@ -244,8 +256,8 @@ export default function LoginPage({ onLogin }) {
                   }}
                   className={`py-2.5 rounded-xl transition-all flex items-center justify-center space-x-1.5 ${
                     selectedRole === 'mechanic' 
-                      ? 'bg-teal-600 text-white shadow-md' 
-                      : 'text-slate-600 hover:text-slate-900'
+                      ? 'bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-500/20' 
+                      : 'text-slate-400 hover:text-white'
                   }`}
                 >
                   <UserCheck className="w-4 h-4" />
@@ -261,8 +273,8 @@ export default function LoginPage({ onLogin }) {
                   }}
                   className={`py-2.5 rounded-xl transition-all flex items-center justify-center space-x-1.5 ${
                     selectedRole === 'admin' 
-                      ? 'bg-teal-600 text-white shadow-md' 
-                      : 'text-slate-600 hover:text-slate-900'
+                      ? 'bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-500/20' 
+                      : 'text-slate-400 hover:text-white'
                   }`}
                 >
                   <ShieldCheck className="w-4 h-4" />
@@ -276,7 +288,7 @@ export default function LoginPage({ onLogin }) {
               type="button"
               onClick={handleGoogleSignIn}
               disabled={loading}
-              className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-4 rounded-2xl transition-all shadow-md text-xs flex items-center justify-center space-x-3 mb-5 cursor-pointer border border-slate-700 active:scale-98"
+              className="w-full bg-[#181a24] hover:bg-[#1f2230] text-white font-bold py-3.5 px-4 rounded-2xl transition-all shadow-md text-xs flex items-center justify-center space-x-3 mb-6 cursor-pointer border border-white/10"
             >
               <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
                 <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.2 9 5 12 5z" />
@@ -287,10 +299,12 @@ export default function LoginPage({ onLogin }) {
               <span>Continue with Google ({selectedRole === 'admin' ? 'SuperAdmin' : selectedRole === 'mechanic' ? 'Mechanic' : 'Customer'})</span>
             </button>
 
-            <div className="relative flex py-2 items-center mb-5">
-              <div className="flex-grow border-t border-slate-200"></div>
-              <span className="flex-shrink mx-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Or Sign In With Email</span>
-              <div className="flex-grow border-t border-slate-200"></div>
+            <div className="relative flex py-2 items-center mb-6">
+              <div className="flex-grow border-t border-white/10"></div>
+              <span className="flex-shrink mx-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                Or Continue With Credentials
+              </span>
+              <div className="flex-grow border-t border-white/10"></div>
             </div>
 
             {/* Email + Password Form */}
@@ -298,20 +312,20 @@ export default function LoginPage({ onLogin }) {
               
               {authMode === 'register' && (
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Full Name</label>
+                  <label className="block font-bold text-slate-300 mb-1.5">Full Name</label>
                   <input
                     type="text"
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Enter your full name"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 font-semibold text-slate-900 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm"
+                    placeholder="e.g. Rahul Sharma"
+                    className="w-full px-4 py-3.5 rounded-xl bg-[#0e1015] border border-white/10 text-white placeholder-slate-600 focus:border-amber-400 focus:outline-none text-sm font-medium"
                   />
                 </div>
               )}
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">
+                <label className="block font-bold text-slate-300 mb-1.5">
                   {selectedRole === 'admin' ? 'SuperAdmin Email' : 'Email Address'}
                 </label>
                 <div className="relative">
@@ -321,14 +335,14 @@ export default function LoginPage({ onLogin }) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder={selectedRole === 'admin' ? 'sudhanshupandey7393@gmail.com' : 'user@example.com'}
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 font-semibold text-slate-900 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm"
+                    className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-[#0e1015] border border-white/10 text-white placeholder-slate-600 focus:border-amber-400 focus:outline-none text-sm font-medium"
                   />
-                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+                  <Mail className="w-4 h-4 text-amber-400 absolute left-3.5 top-4" />
                 </div>
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Password</label>
+                <label className="block font-bold text-slate-300 mb-1.5">Password</label>
                 <div className="relative">
                   <input
                     type="password"
@@ -337,23 +351,23 @@ export default function LoginPage({ onLogin }) {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 font-semibold text-slate-900 focus:ring-2 focus:ring-teal-500 focus:outline-none text-sm"
+                    className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-[#0e1015] border border-white/10 text-white placeholder-slate-600 focus:border-amber-400 focus:outline-none text-sm font-medium"
                   />
-                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+                  <Lock className="w-4 h-4 text-amber-400 absolute left-3.5 top-4" />
                 </div>
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-extrabold py-3.5 rounded-xl transition-all shadow-lg text-sm flex items-center justify-center space-x-2 mt-4 cursor-pointer disabled:opacity-50"
+                className="w-full btn-amber-glow font-black py-4 rounded-xl text-sm flex items-center justify-center space-x-2 mt-6 cursor-pointer disabled:opacity-50"
               >
                 {loading ? (
                   <span>Authenticating...</span>
                 ) : (
                   <>
-                    {authMode === 'login' ? <ArrowRight className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />}
-                    <span>{authMode === 'login' ? `Sign In as ${selectedRole === 'admin' ? 'SuperAdmin' : selectedRole === 'mechanic' ? 'Mechanic' : 'Customer'}` : 'Create Account'}</span>
+                    {authMode === 'login' ? <ArrowRight className="w-4 h-4 stroke-[3]" /> : <UserPlus className="w-4 h-4" />}
+                    <span>{authMode === 'login' ? `Sign In as ${selectedRole === 'admin' ? 'SuperAdmin' : selectedRole === 'mechanic' ? 'Mechanic' : 'Customer'}` : 'Create Customer Account'}</span>
                   </>
                 )}
               </button>
@@ -361,7 +375,7 @@ export default function LoginPage({ onLogin }) {
 
           </div>
 
-          <div className="text-center pt-6 text-[11px] text-slate-400 border-t border-slate-100">
+          <div className="text-center pt-8 text-[11px] text-slate-500 border-t border-white/10 mt-6">
             Protected by 256-bit SSL encryption & ServiceSetu Verification Protocol.
           </div>
         </div>

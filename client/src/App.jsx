@@ -42,7 +42,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-900 font-sans">
+    <div className="min-h-screen flex flex-col bg-[#0b0c10] text-slate-100 font-sans selection:bg-amber-500 selection:text-slate-950">
       <Navbar 
         currentUser={currentUser} 
         isLoginPage={isLoginPage}
