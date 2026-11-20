@@ -86,33 +86,33 @@ export default function BookingPage({ onBookingCreated }) {
     {
       id: 'srv-1',
       title: 'General Bike Service',
-      desc: 'Routine maintenance with oil change, filter clean & 32-point inspection.',
-      tag: 'Most Popular',
-      image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=700&auto=format&fit=crop&q=80',
+      desc: 'Routine maintenance with oil change & inspection.',
+      tag: 'Doorstep Special',
+      image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=600&auto=format&fit=crop&q=80',
       targetPkgId: 'pkg-standard'
     },
     {
       id: 'srv-2',
-      title: 'Engine Tune-Up & Dyno',
-      desc: 'Improve bike performance, compression, mileage & throttle smoothness.',
+      title: 'Engine Tune-Up',
+      desc: 'Improve bike performance, mileage & smoothness.',
       tag: 'Performance',
-      image: 'https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=700&auto=format&fit=crop&q=80',
+      image: 'https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=600&auto=format&fit=crop&q=80',
       targetPkgId: 'pkg-performance'
     },
     {
       id: 'srv-3',
       title: 'Bike Washing & Detailing',
-      desc: 'Shine & protect paint with premium snow foam wash, degreaser & wax polish.',
-      tag: 'Spa & Shine',
-      image: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=700&auto=format&fit=crop&q=80',
+      desc: 'Shine & protect with premium foam wash + polish.',
+      tag: 'Shine & Spa',
+      image: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&auto=format&fit=crop&q=80',
       targetPkgId: 'pkg-standard'
     },
     {
       id: 'srv-4',
-      title: 'Brake & Clutch Overhaul',
-      desc: 'Smooth & responsive control on every ride with genuine pads & cable lube.',
-      tag: 'Safety First',
-      image: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=700&auto=format&fit=crop&q=80',
+      title: 'Brake & Clutch Repair',
+      desc: 'Smooth and responsive control on every ride.',
+      tag: 'Safety Check',
+      image: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=600&auto=format&fit=crop&q=80',
       targetPkgId: 'pkg-heavy'
     }
   ];
@@ -248,78 +248,71 @@ export default function BookingPage({ onBookingCreated }) {
     <div className="min-h-screen bg-[#0b0c10] text-slate-100 selection:bg-amber-500 selection:text-slate-950">
       
       {/* ========================================================================= */}
-      {/* 1. HERO SECTION - ICONIC DESIGN EXACTLY AS IN USER'S REFERENCE IMAGE       */}
+      {/* 1. HERO SECTION - EXACT REPLICA OF THE REFERENCE IMAGE DESIGN             */}
       {/* ========================================================================= */}
-      <section className="relative overflow-hidden pt-8 pb-16 lg:py-20 border-b border-white/5">
+      <section className="relative overflow-hidden pt-6 pb-16 lg:py-16 border-b border-white/5 bg-[#0b0c10]">
         
-        {/* Diagonal Speed Chevron Pattern in Background (matching right side of reference) */}
-        <div className="absolute right-0 top-0 w-full lg:w-2/3 h-full pointer-events-none opacity-20 chevron-stripes" />
-        <div className="absolute -top-32 right-10 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Large Bold Geometric Speed Chevron Slashes (Right Side of Reference) */}
+        <div className="absolute right-0 top-0 w-1/2 h-full pointer-events-none hidden lg:block overflow-hidden">
+          <svg className="w-full h-full opacity-35" viewBox="0 0 700 600" fill="none" preserveAspectRatio="none">
+            <polygon points="350,0 700,0 520,600 170,600" fill="#1b1d24" />
+            <polygon points="460,0 700,0 590,600 350,600" fill="#22252e" />
+            <polygon points="580,0 700,0 660,600 540,600" fill="#2d303b" />
+          </svg>
+        </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             
-            {/* LEFT COLUMN: THE ICONIC GOLDEN ARCHWAY & BIKE VISUAL */}
-            <div className="lg:col-span-5 flex justify-center items-end relative">
-              <div className="relative w-[300px] sm:w-[380px] lg:w-[420px]">
-                
-                {/* The Signature Golden Arch Portal from Reference Image */}
-                <div className="hero-arch-frame w-full h-[320px] sm:h-[400px] lg:h-[430px] flex items-end justify-center bg-gradient-to-b from-amber-500/10 via-amber-950/20 to-transparent">
-                  {/* Internal ambient ring glow */}
-                  <div className="absolute top-8 w-44 h-44 rounded-full bg-amber-500/15 blur-2xl" />
-                </div>
-
-                {/* The Motorcycle Visual standing proud in the arch */}
-                <div className="absolute -bottom-2 -left-6 sm:-left-8 lg:-left-10 w-[340px] sm:w-[430px] lg:w-[480px] transition-transform hover:scale-105 duration-500 drop-shadow-[0_25px_35px_rgba(0,0,0,0.85)]">
-                  <img 
-                    src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=900&auto=format&fit=crop&q=85" 
-                    alt="Custom Performance Motorcycle" 
-                    className="w-full h-auto object-contain rounded-2xl"
-                  />
-                  
-                  {/* Floating Trust Pill on Hero Bike */}
-                  <div className="absolute bottom-6 left-6 bg-[#12141a]/95 backdrop-blur-md border border-amber-500/40 px-3.5 py-1.5 rounded-2xl flex items-center gap-2 shadow-xl">
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" />
-                    <span className="text-[11px] font-black text-amber-300 uppercase tracking-wider">
-                      Doorstep Service Hub
-                    </span>
-                  </div>
-                </div>
-
+            {/* LEFT COLUMN: THE ICONIC TALL GOLDEN ARCH & SEAMLESS CUTOUT MOTORCYCLE */}
+            <div className="lg:col-span-5 flex justify-center items-end relative min-h-[380px] sm:min-h-[440px]">
+              
+              {/* The Signature Tall Golden/Amber Arch from Reference */}
+              <div className="w-[280px] sm:w-[340px] h-[360px] sm:h-[430px] rounded-t-full border-[14px] border-[#e58a13] shadow-[0_0_60px_rgba(229,138,19,0.35)] relative flex items-center justify-center">
+                {/* Subtle soft ambient halo inside arch */}
+                <div className="w-48 h-48 rounded-full bg-amber-500/10 blur-3xl pointer-events-none" />
               </div>
+
+              {/* The Seamless Cutout Motorcycle - Grounded directly in front with ZERO background box! */}
+              <div className="absolute -bottom-2 -left-4 sm:-left-8 w-[340px] sm:w-[440px] lg:w-[480px] pointer-events-none transition-transform hover:scale-105 duration-500 drop-shadow-[0_25px_30px_rgba(0,0,0,0.95)]">
+                <img 
+                  src="/images/hero-bike.png" 
+                  alt="Performance Custom Motorcycle" 
+                  className="w-full h-auto object-contain"
+                  onError={(e) => {
+                    // Fallback to alt transparent bike if primary fails
+                    e.target.src = "/images/hero-bike-alt.png";
+                  }}
+                />
+              </div>
+
             </div>
 
             {/* RIGHT COLUMN: HEADLINE, DESCRIPTION & BUTTONS */}
             <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
               
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-black uppercase tracking-widest">
-                <Bike className="w-4 h-4 text-amber-400" />
-                <span>India's #1 Doorstep Bike Workshop</span>
-              </div>
-
               {/* Exact High-Impact Headline from Reference */}
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.1]">
-                <span className="text-amber-400 block drop-shadow-[0_2px_15px_rgba(245,158,11,0.3)]">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1]">
+                <span className="text-[#e58a13] block">
                   Best Bike Repair
                 </span>
-                <span className="text-amber-500/90 block">
+                <span className="text-[#e58a13] block">
                   & Maintenance Services
                 </span>
               </h1>
 
-              {/* Exact Subtext Style from Reference */}
-              <p className="text-slate-300 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
+              {/* Exact Subtext from Reference */}
+              <p className="text-slate-300 text-sm sm:text-base max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
                 Professional two-wheeler servicing, repairs, detailing & performance upgrades. Trusted by riders for precision and care.
               </p>
 
-              {/* Action Buttons exactly matching Reference Layout */}
+              {/* Action Buttons exactly matching Reference Design */}
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                 <button
                   onClick={scrollToBooking}
-                  className="btn-amber-glow w-full sm:w-auto px-8 py-4 rounded-2xl text-base font-black tracking-wide flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full sm:w-auto px-8 py-3.5 rounded-full text-base font-extrabold bg-[#e58a13] hover:bg-[#d97706] text-slate-950 transition-all shadow-lg shadow-amber-500/30 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>Book Service</span>
-                  <ArrowRight className="w-5 h-5 stroke-[2.5]" />
                 </button>
 
                 <button
@@ -327,20 +320,20 @@ export default function BookingPage({ onBookingCreated }) {
                     const el = document.getElementById('services-section');
                     if (el) el.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="btn-outline-garage w-full sm:w-auto px-7 py-4 rounded-2xl text-base font-bold tracking-wide flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full sm:w-auto px-8 py-3.5 rounded-full text-base font-bold text-white border border-white/60 hover:border-[#e58a13] hover:text-[#e58a13] transition-all bg-transparent cursor-pointer"
                 >
                   <span>View All Services</span>
                 </button>
               </div>
 
-              {/* Quick Trust Highlights */}
+              {/* Live Metric Badges */}
               <div className="pt-6 border-t border-white/10 grid grid-cols-3 gap-4 max-w-lg mx-auto lg:mx-0 text-left">
                 <div>
                   <strong className="text-white text-lg font-black block">250+</strong>
                   <span className="text-slate-400 text-xs">Bike Models</span>
                 </div>
                 <div>
-                  <strong className="text-amber-400 text-lg font-black block">100%</strong>
+                  <strong className="text-[#e58a13] text-lg font-black block">100%</strong>
                   <span className="text-slate-400 text-xs">Barcode Genuine</span>
                 </div>
                 <div>
@@ -357,85 +350,73 @@ export default function BookingPage({ onBookingCreated }) {
       </section>
 
       {/* ========================================================================= */}
-      {/* 2. "OUR SERVICES" CAROUSEL ROW - EXACTLY AS IN BOTTOM HALF OF REFERENCE    */}
+      {/* 2. "OUR SERVICES" CAROUSEL ROW - MATCHING BOTTOM HALF OF REFERENCE         */}
       {/* ========================================================================= */}
-      <section id="services-section" className="py-16 bg-[#0f1117] border-b border-white/5">
+      <section id="services-section" className="py-14 bg-[#14161d] border-b border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Section Header with Navigation Arrows */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-10 gap-4">
+          <div className="flex items-end justify-between mb-8">
             <div>
-              <div className="flex items-center gap-2 text-amber-400 mb-2">
+              <div className="flex items-center gap-2 text-[#e58a13] mb-1">
                 <Bike className="w-5 h-5 stroke-[2.5]" />
-                <span className="text-xs font-black uppercase tracking-widest">Our Services</span>
+                <span className="text-xs font-black uppercase tracking-wider">Our Services</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+              <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
                 Best Bike Repair & Maintenance Services
               </h2>
             </div>
 
-            {/* Slider Arrow Controls from Reference */}
+            {/* Orange Arrow Controls from Reference */}
             <div className="flex items-center gap-2">
               <button 
                 onClick={() => setActiveServiceIdx((prev) => (prev > 0 ? prev - 1 : showcaseServices.length - 1))}
-                className="w-10 h-10 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black flex items-center justify-center transition-all shadow-md shadow-amber-500/20"
+                className="w-8 h-8 rounded-lg bg-[#e58a13] hover:bg-[#d97706] text-slate-950 flex items-center justify-center font-black transition-all"
                 title="Previous service"
               >
-                <ChevronLeft className="w-5 h-5 stroke-[3]" />
+                <ChevronLeft className="w-4 h-4 stroke-[3]" />
               </button>
               <button 
                 onClick={() => setActiveServiceIdx((prev) => (prev < showcaseServices.length - 1 ? prev + 1 : 0))}
-                className="w-10 h-10 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black flex items-center justify-center transition-all shadow-md shadow-amber-500/20"
+                className="w-8 h-8 rounded-lg bg-white hover:bg-slate-200 text-slate-950 flex items-center justify-center font-black transition-all"
                 title="Next service"
               >
-                <ChevronRight className="w-5 h-5 stroke-[3]" />
+                <ChevronRight className="w-4 h-4 stroke-[3]" />
               </button>
             </div>
           </div>
 
-          {/* 4 Service Cards matching Reference Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* 4 Photographic Cards exactly matching Reference Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {showcaseServices.map((srv, idx) => (
               <div
                 key={srv.id}
                 onClick={() => handleSelectServiceCard(srv)}
-                className={`group relative rounded-3xl overflow-hidden cursor-pointer bg-[#14161f] border transition-all duration-300 ${
+                className={`group relative rounded-2xl overflow-hidden cursor-pointer h-72 sm:h-80 transition-all duration-300 ${
                   activeServiceIdx === idx 
-                    ? 'border-amber-500 ring-2 ring-amber-500/30 scale-[1.02] shadow-2xl shadow-amber-500/20' 
-                    : 'border-white/10 hover:border-amber-500/50 hover:-translate-y-1'
+                    ? 'ring-2 ring-[#e58a13] scale-[1.02] shadow-2xl' 
+                    : 'hover:-translate-y-1 shadow-lg'
                 }`}
               >
-                {/* Photo with dark gradient overlay matching reference */}
-                <div className="relative h-64 sm:h-72 w-full overflow-hidden">
-                  <img 
-                    src={srv.image} 
-                    alt={srv.title} 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90"
-                  />
-                  {/* Vignette Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0b0c10] via-[#0b0c10]/40 to-transparent" />
-                  
-                  {/* Category Pill Tag */}
-                  <span className="absolute top-4 left-4 bg-black/70 backdrop-blur-md text-amber-400 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full border border-amber-500/30">
-                    {srv.tag}
-                  </span>
-                </div>
+                {/* Background Photo */}
+                <img 
+                  src={srv.image} 
+                  alt={srv.title} 
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90"
+                />
 
-                {/* Card Text Content (Bottom anchored like reference) */}
-                <div className="absolute bottom-0 inset-x-0 p-5 bg-gradient-to-t from-[#0b0c10] to-transparent">
-                  <h3 className="text-lg font-black text-white group-hover:text-amber-400 transition-colors">
+                {/* Vignette Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+
+                {/* Card Text Content (Anchored at Bottom like Reference) */}
+                <div className="absolute bottom-0 inset-x-0 p-5">
+                  <h3 className="text-base font-extrabold text-white group-hover:text-[#e58a13] transition-colors leading-snug">
                     {srv.title}
                   </h3>
                   <p className="text-xs text-slate-300 mt-1 line-clamp-2 leading-relaxed">
                     {srv.desc}
                   </p>
-                  
-                  <div className="mt-3 flex items-center justify-between pt-2 border-t border-white/10 text-amber-400 text-xs font-black">
-                    <span>Book Doorstep</span>
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </div>
                 </div>
-
               </div>
             ))}
           </div>
@@ -444,14 +425,14 @@ export default function BookingPage({ onBookingCreated }) {
       </section>
 
       {/* ========================================================================= */}
-      {/* 3. 7-DAY SATISFACTION GUARANTEE BAR & WORKFLOW EXPLAINER                   */}
+      {/* 3. 7-DAY GUARANTEE & SERVICE WORKFLOW EXPLAINER                           */}
       {/* ========================================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         
         {/* 7-Day Guarantee Banner */}
-        <div className="bg-gradient-to-r from-amber-950/60 via-[#181a24] to-emerald-950/50 border border-amber-500/40 rounded-3xl p-5 sm:p-6 mb-10 shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="bg-[#12141c] border border-amber-500/30 rounded-3xl p-5 sm:p-6 mb-10 shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4 flex-wrap justify-center md:justify-start">
-            <div className="w-12 h-12 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center font-black flex-shrink-0 shadow-lg shadow-amber-500/25">
+            <div className="w-12 h-12 rounded-2xl bg-[#e58a13] text-slate-950 flex items-center justify-center font-black flex-shrink-0 shadow-lg shadow-amber-500/20">
               <BadgeCheck className="w-7 h-7 stroke-[2.5]" />
             </div>
             <div>
@@ -459,7 +440,7 @@ export default function BookingPage({ onBookingCreated }) {
                 ServiceSetu 7-Day Satisfaction Guarantee
               </h4>
               <p className="text-xs text-slate-300">
-                Not 100% happy with your service? Our mobile master mechanic will re-service your vehicle at ZERO charge.
+                Not 100% happy with your service? Our mobile master technician will redo it for FREE. No questions asked.
               </p>
             </div>
           </div>
@@ -472,7 +453,7 @@ export default function BookingPage({ onBookingCreated }) {
               <Shield className="w-3.5 h-3.5 text-amber-400" /> 30-Day Parts Warranty
             </span>
             <span className="flex items-center gap-1.5 bg-black/40 px-3 py-1.5 rounded-xl border border-white/10">
-              <Zap className="w-3.5 h-3.5 text-amber-400" /> 90-Min Doorstep Arrival
+              <Zap className="w-3.5 h-3.5 text-amber-400" /> 90-Min Arrival
             </span>
           </div>
         </div>
@@ -507,7 +488,7 @@ export default function BookingPage({ onBookingCreated }) {
       </section>
 
       {/* ========================================================================= */}
-      {/* 4. THE INTERACTIVE BOOKING FLOW - DARK LUXURY AUTOMOTIVE WORKSHOP THEME   */}
+      {/* 4. THE INTERACTIVE BOOKING FLOW - DARK LUXURY WORKSHOP THEME              */}
       {/* ========================================================================= */}
       <section id="booking-flow-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
         
@@ -526,12 +507,12 @@ export default function BookingPage({ onBookingCreated }) {
                   key={s.num}
                   onClick={() => { if (step > s.num) setStep(s.num); }}
                   className={`flex items-center space-x-2 cursor-pointer transition-colors ${
-                    step >= s.num ? 'text-amber-400 font-extrabold' : 'text-slate-500 font-medium'
+                    step >= s.num ? 'text-[#e58a13] font-extrabold' : 'text-slate-500 font-medium'
                   }`}
                 >
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all ${
                     step === s.num 
-                      ? 'bg-amber-500 text-slate-950 ring-4 ring-amber-500/20 shadow-lg shadow-amber-500/30' 
+                      ? 'bg-[#e58a13] text-slate-950 ring-4 ring-amber-500/20 shadow-lg shadow-amber-500/30' 
                       : step > s.num 
                       ? 'bg-emerald-500 text-white' 
                       : 'bg-white/5 text-slate-400 border border-white/10'
@@ -551,7 +532,7 @@ export default function BookingPage({ onBookingCreated }) {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4 border-b border-white/10 pb-6">
               <div>
                 <h2 className="text-2xl font-black text-white flex items-center gap-3">
-                  <Bike className="w-6 h-6 text-amber-400" />
+                  <Bike className="w-6 h-6 text-[#e58a13]" />
                   Step 1: Select Your Two-Wheeler
                 </h2>
                 <p className="text-xs text-slate-400 mt-1">
@@ -565,7 +546,7 @@ export default function BookingPage({ onBookingCreated }) {
                 onClick={() => setIsCustomVehicle(!isCustomVehicle)}
                 className="btn-outline-garage text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-2"
               >
-                <PlusCircle className="w-4 h-4 text-amber-400" />
+                <PlusCircle className="w-4 h-4 text-[#e58a13]" />
                 <span>{isCustomVehicle ? 'Browse Standard Brands' : 'Add Custom Bike Model'}</span>
               </button>
             </div>
@@ -573,7 +554,7 @@ export default function BookingPage({ onBookingCreated }) {
             {isCustomVehicle ? (
               <div className="bg-[#181a24] border border-amber-500/30 p-6 rounded-2xl space-y-5">
                 <h4 className="font-extrabold text-sm text-white flex items-center gap-2">
-                  <Wrench className="w-4 h-4 text-amber-400" />
+                  <Wrench className="w-4 h-4 text-[#e58a13]" />
                   Manual Vehicle Specification
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -603,7 +584,7 @@ export default function BookingPage({ onBookingCreated }) {
               <>
                 {/* Brand Tabs */}
                 <div className="mb-8">
-                  <label className="block text-xs font-black uppercase tracking-wider text-amber-400 mb-3">
+                  <label className="block text-xs font-black uppercase tracking-wider text-[#e58a13] mb-3">
                     Select Manufacturer
                   </label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -618,7 +599,7 @@ export default function BookingPage({ onBookingCreated }) {
                         }}
                         className={`p-3.5 rounded-2xl border text-xs font-black tracking-wide text-center transition-all ${
                           selectedMake === v.make
-                            ? 'border-amber-500 bg-amber-500/10 text-amber-400 shadow-lg shadow-amber-500/10 ring-1 ring-amber-500/40'
+                            ? 'border-[#e58a13] bg-amber-500/10 text-[#e58a13] shadow-lg shadow-amber-500/10 ring-1 ring-amber-500/40'
                             : 'border-white/5 bg-[#181a24] text-slate-300 hover:border-white/20'
                         }`}
                       >
@@ -647,7 +628,7 @@ export default function BookingPage({ onBookingCreated }) {
                     <label className="text-xs font-black uppercase tracking-wider text-slate-400">
                       Available Models ({filteredModels.length} Found)
                     </label>
-                    <span className="text-xs text-amber-400 font-bold">Brand: {selectedMake}</span>
+                    <span className="text-xs text-[#e58a13] font-bold">Brand: {selectedMake}</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -659,13 +640,13 @@ export default function BookingPage({ onBookingCreated }) {
                           onClick={() => setSelectedModel(m)}
                           className={`p-5 rounded-2xl border cursor-pointer transition-all ${
                             isSelected
-                              ? 'border-amber-500 bg-amber-500/10 text-white shadow-xl shadow-amber-500/10 ring-1 ring-amber-500/40'
+                              ? 'border-[#e58a13] bg-amber-500/10 text-white shadow-xl shadow-amber-500/10 ring-1 ring-amber-500/40'
                               : 'border-white/5 bg-[#181a24] hover:border-white/20'
                           }`}
                         >
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-black text-base text-white">{m.name}</span>
-                            <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-white/5 text-amber-400 border border-white/5">
+                            <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-white/5 text-[#e58a13] border border-white/5">
                               {m.category}
                             </span>
                           </div>
@@ -711,11 +692,11 @@ export default function BookingPage({ onBookingCreated }) {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4 border-b border-white/10 pb-6">
               <div>
                 <h2 className="text-2xl font-black text-white flex items-center gap-3">
-                  <Sparkles className="w-6 h-6 text-amber-400" />
+                  <Sparkles className="w-6 h-6 text-[#e58a13]" />
                   Step 2: Choose Service Package
                 </h2>
                 <p className="text-xs text-slate-400 mt-1">
-                  Selected Bike: <strong className="text-amber-400">{isCustomVehicle ? `${customMake} ${customModel}` : `${selectedMake} ${selectedModel?.name}`}</strong>
+                  Selected Bike: <strong className="text-[#e58a13]">{isCustomVehicle ? `${customMake} ${customModel}` : `${selectedMake} ${selectedModel?.name}`}</strong>
                 </p>
               </div>
 
@@ -734,7 +715,7 @@ export default function BookingPage({ onBookingCreated }) {
                     onClick={() => setSelectedPkg(pkg)}
                     className={`relative p-6 rounded-3xl border cursor-pointer transition-all flex flex-col justify-between ${
                       isSelected
-                        ? 'border-amber-500 bg-amber-500/10 ring-2 ring-amber-500/40 shadow-2xl shadow-amber-500/20'
+                        ? 'border-[#e58a13] bg-amber-500/10 ring-2 ring-amber-500/40 shadow-2xl shadow-amber-500/20'
                         : 'border-white/5 bg-[#181a24] hover:border-white/20'
                     }`}
                   >
@@ -746,7 +727,7 @@ export default function BookingPage({ onBookingCreated }) {
 
                     <div>
                       <div className="flex items-center justify-between mb-4">
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-lg">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#e58a13] bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-lg">
                           {pkg.serviceType === 'heavy_workshop' ? 'Workshop Repair' : 'Doorstep Service'}
                         </span>
                         <div className="text-right">
@@ -770,7 +751,7 @@ export default function BookingPage({ onBookingCreated }) {
 
                     <div className="pt-4 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
                       <span className="flex items-center gap-1 font-medium"><Clock className="w-3.5 h-3.5 text-amber-400" /> ~{pkg.estimatedMinutes} mins</span>
-                      <span className="font-bold text-amber-400">{pkg.idealFor}</span>
+                      <span className="font-bold text-[#e58a13]">{pkg.idealFor}</span>
                     </div>
                   </div>
                 );
@@ -800,7 +781,7 @@ export default function BookingPage({ onBookingCreated }) {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4 border-b border-white/10 pb-6">
               <div>
                 <h2 className="text-2xl font-black text-white flex items-center gap-3">
-                  <Droplet className="w-6 h-6 text-amber-400" />
+                  <Droplet className="w-6 h-6 text-[#e58a13]" />
                   Step 3: Engine Oil Brand Upgrade
                 </h2>
                 <p className="text-xs text-slate-400 mt-1">
@@ -822,7 +803,7 @@ export default function BookingPage({ onBookingCreated }) {
                     onClick={() => setSelectedOil(oil)}
                     className={`p-5 rounded-2xl border cursor-pointer transition-all flex items-center justify-between gap-4 ${
                       isSelected 
-                        ? 'border-amber-500 bg-amber-500/10 ring-2 ring-amber-500/40 shadow-xl shadow-amber-500/10' 
+                        ? 'border-[#e58a13] bg-amber-500/10 ring-2 ring-amber-500/40 shadow-xl shadow-amber-500/10' 
                         : 'border-white/5 bg-[#181a24] hover:border-white/20'
                     }`}
                   >
@@ -835,7 +816,7 @@ export default function BookingPage({ onBookingCreated }) {
                       <div>
                         <div className="flex items-center space-x-2">
                           <h4 className="font-black text-base text-white">{oil.brand}</h4>
-                          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-white/5 text-amber-400 border border-white/5">
+                          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-white/5 text-[#e58a13] border border-white/5">
                             {oil.badge}
                           </span>
                         </div>
@@ -870,7 +851,7 @@ export default function BookingPage({ onBookingCreated }) {
         {step === 4 && (
           <div className="bg-[#12141c] rounded-3xl border border-white/10 p-6 sm:p-10 shadow-2xl">
             <h2 className="text-2xl font-black text-white mb-2 flex items-center gap-3">
-              <Calendar className="w-6 h-6 text-amber-400" />
+              <Calendar className="w-6 h-6 text-[#e58a13]" />
               Step 4: Doorstep Location & Schedule
             </h2>
             <p className="text-xs text-slate-400 mb-8">
@@ -905,7 +886,7 @@ export default function BookingPage({ onBookingCreated }) {
                         onClick={() => setTimeSlot(slot)}
                         className={`p-3 rounded-xl text-xs font-bold border transition-all ${
                           timeSlot === slot 
-                            ? 'border-amber-500 bg-amber-500/10 text-amber-400' 
+                            ? 'border-[#e58a13] bg-amber-500/10 text-[#e58a13]' 
                             : 'border-white/5 bg-[#181a24] text-slate-400 hover:text-white'
                         }`}
                       >
@@ -952,7 +933,7 @@ export default function BookingPage({ onBookingCreated }) {
                     <span className="text-slate-400 font-mono text-[11px]">{locationCoords.lat}, {locationCoords.lng}</span>
                   </div>
                   <div className="h-32 rounded-xl bg-[#0e1015] flex flex-col items-center justify-center border border-white/5 text-center p-4">
-                    <MapPin className="w-7 h-7 text-amber-400 animate-bounce mb-1" />
+                    <MapPin className="w-7 h-7 text-[#e58a13] animate-bounce mb-1" />
                     <p className="text-xs text-slate-300 font-bold">Koramangala / Indiranagar Tech Hub</p>
                     <span className="text-[10px] text-emerald-400 font-semibold mt-0.5">● Active Mechanics on Patrol</span>
                   </div>
@@ -975,7 +956,7 @@ export default function BookingPage({ onBookingCreated }) {
         {step === 5 && (
           <div className="bg-[#12141c] rounded-3xl border border-white/10 p-6 sm:p-10 shadow-2xl max-w-3xl mx-auto">
             <h2 className="text-2xl font-black text-white mb-2 flex items-center gap-3">
-              <FileCheck className="w-6 h-6 text-amber-400" />
+              <FileCheck className="w-6 h-6 text-[#e58a13]" />
               Step 5: Upfront Pricing & Checkout
             </h2>
             <p className="text-xs text-slate-400 mb-6">
@@ -991,7 +972,7 @@ export default function BookingPage({ onBookingCreated }) {
               </div>
               <div className="flex justify-between border-b border-white/10 pb-3">
                 <span className="text-slate-400">Service Package</span>
-                <span className="font-extrabold text-amber-400">{selectedPkg?.name} (₹{basePrice})</span>
+                <span className="font-extrabold text-[#e58a13]">{selectedPkg?.name} (₹{basePrice})</span>
               </div>
               <div className="flex justify-between border-b border-white/10 pb-3">
                 <span className="text-slate-400">Engine Oil</span>
@@ -1007,7 +988,7 @@ export default function BookingPage({ onBookingCreated }) {
                 <div className="flex justify-between"><span>Oil Upgrade:</span> <span className="text-white font-mono">+ ₹{oilUpgradeCost}</span></div>
                 <div className="flex justify-between"><span>GST (18%):</span> <span className="text-white font-mono">+ ₹{gstAmount}</span></div>
                 <div className="flex justify-between text-lg font-black text-white border-t border-white/10 pt-3 mt-3">
-                  <span>Total Amount:</span> <span className="text-amber-400 font-mono">₹{totalPrice}</span>
+                  <span>Total Amount:</span> <span className="text-[#e58a13] font-mono">₹{totalPrice}</span>
                 </div>
               </div>
             </div>
@@ -1035,14 +1016,14 @@ export default function BookingPage({ onBookingCreated }) {
             </div>
             <h2 className="text-3xl font-black text-white">Booking Confirmed! #{createdBooking.id}</h2>
             <p className="text-sm text-slate-300 mt-2 mb-8">
-              Service Handover OTP: <strong className="font-mono text-amber-400 text-lg px-2 py-0.5 bg-amber-500/10 rounded-lg border border-amber-500/30">{createdBooking.otp}</strong>
+              Service Handover OTP: <strong className="font-mono text-[#e58a13] text-lg px-2 py-0.5 bg-amber-500/10 rounded-lg border border-amber-500/30">{createdBooking.otp}</strong>
             </p>
 
             {createdBooking.mechanic && (
               <div className="bg-[#181a24] border border-white/10 rounded-2xl p-6 mb-8 text-left">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs text-amber-400 font-bold uppercase flex items-center gap-1.5">
-                    <UserCheck className="w-4 h-4 text-amber-400" /> Assigned Verified Mechanic
+                  <span className="text-xs text-[#e58a13] font-bold uppercase flex items-center gap-1.5">
+                    <UserCheck className="w-4 h-4 text-[#e58a13]" /> Assigned Verified Mechanic
                   </span>
                   <span className="text-[11px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3 py-0.5 rounded-full font-bold">
                     {createdBooking.mechanic.kycStatus} KYC
