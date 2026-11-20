@@ -26,7 +26,10 @@ import {
   Navigation,
   Search,
   PlusCircle,
-  HelpCircle
+  HelpCircle,
+  BadgeCheck,
+  RefreshCcw,
+  Zap
 } from 'lucide-react';
 
 export default function BookingPage({ onBookingCreated }) {
@@ -188,6 +191,31 @@ export default function BookingPage({ onBookingCreated }) {
             Verified mechanic visits your home or office. Upfront fixed pricing with real barcode product verification — no hidden charges.
           </p>
         </div>
+      </div>
+
+      {/* ✅ 7-DAY GUARANTEE BANNER */}
+      <div className="bg-gradient-to-r from-emerald-900 to-teal-900 border border-emerald-700/50 rounded-2xl px-5 py-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg">
+        <div className="flex items-center gap-6 flex-wrap justify-center sm:justify-start">
+          <div className="flex items-center gap-2 text-white">
+            <BadgeCheck className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+            <span className="text-sm font-extrabold">7-Day Satisfaction Guarantee</span>
+          </div>
+          <div className="flex items-center gap-2 text-emerald-200 text-xs font-semibold">
+            <RefreshCcw className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Free redo if unsatisfied</span>
+          </div>
+          <div className="flex items-center gap-2 text-emerald-200 text-xs font-semibold">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <span>30-day parts warranty</span>
+          </div>
+          <div className="flex items-center gap-2 text-emerald-200 text-xs font-semibold">
+            <Zap className="w-3.5 h-3.5 text-emerald-400" />
+            <span>90-min arrival or ₹100 cashback</span>
+          </div>
+        </div>
+        <span className="text-[10px] font-extrabold uppercase tracking-widest bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-3 py-1.5 rounded-full whitespace-nowrap">
+          Fixed Price · No Hidden Charges
+        </span>
       </div>
 
       {/* HOW SERVICESETU WORKS (EASY VISUAL GUIDE FOR CUSTOMERS) */}

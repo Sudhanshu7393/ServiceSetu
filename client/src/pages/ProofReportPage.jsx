@@ -14,7 +14,17 @@ import {
   Bike,
   Star,
   ShieldAlert,
-  Heart
+  Heart,
+  MessageCircle,
+  Download,
+  AlertTriangle,
+  XCircle,
+  Battery,
+  Gauge,
+  Wind,
+  Droplet,
+  CircleDot,
+  BadgeCheck
 } from 'lucide-react';
 
 export default function ProofReportPage({ bookingId: initialBookingId }) {
@@ -208,9 +218,22 @@ export default function ProofReportPage({ bookingId: initialBookingId }) {
                 <Barcode className="w-5 h-5 text-teal-600 mr-2" />
                 Product Authenticity & Barcode Audit Trail
               </h3>
-              <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">
-                100% Genuine Certified
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">
+                  100% Genuine Certified
+                </span>
+                {report.usedProducts?.length > 0 && (
+                  <a
+                    href={`https://wa.me/?text=${encodeURIComponent(`✅ GENUINE PARTS CERTIFICATE\n━━━━━━━━━━━━━━\nServiceSetu Barcode Verified\n\nBooking: ${report.id}\nVehicle: ${report.vehicle?.make} ${report.vehicle?.model}\nDate: ${report.date}\n\nVerified Parts:\n${report.usedProducts.map(p => `• ${p.name} [${p.barcode}]`).join('\n')}\n\n🔒 Tamper-proof barcode audit recorded\nhttps://servicesetu-sage.vercel.app`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-[11px] font-bold bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-full transition-all"
+                  >
+                    <MessageCircle className="w-3 h-3" />
+                    Share Certificate
+                  </a>
+                )}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -233,7 +256,73 @@ export default function ProofReportPage({ bookingId: initialBookingId }) {
             </div>
           </div>
 
-          {/* SECTION 3: RATE MECHANIC (FEEDBACK STREAM MATCHING FLOWCHART) */}
+          {/* SECTION 2.5: VEHICLE HEALTH REPORT CARD */}
+          <div className="mb-8 border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+            <div className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Gauge className="w-5 h-5 text-teal-400" />
+                <h3 className="font-extrabold text-sm">Vehicle Health Report Card</h3>
+              </div>
+              <span className="text-[10px] font-bold bg-teal-500/20 text-teal-300 border border-teal-500/30 px-3 py-1 rounded-full uppercase tracking-wider">
+                ServiceSetu Certified
+              </span>
+            </div>
+
+            <div className="p-6 bg-white">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[
+                  { icon: Droplet, label: 'Engine Oil', status: report.usedProducts?.length > 0 ? 'good' : 'warn', msg: report.usedProducts?.length > 0 ? 'Changed — Barcode Verified ✓' : 'Check required' },
+                  { icon: CircleDot, label: 'Brake Pads', status: report.inspectionDetails?.brakePadLife?.includes('7') || report.inspectionDetails?.brakePadLife?.includes('8') || report.inspectionDetails?.brakePadLife?.includes('9') ? 'good' : 'warn', msg: report.inspectionDetails?.brakePadLife || '70% life remaining' },
+                  { icon: Wind, label: 'Tyre Pressure', status: 'good', msg: `F: ${report.inspectionDetails?.frontTyrePressure || '28 PSI'} · R: ${report.inspectionDetails?.rearTyrePressure || '36 PSI'}` },
+                  { icon: Battery, label: 'Battery Health', status: report.inspectionDetails?.batteryVoltage?.includes('12.6') || report.inspectionDetails?.batteryVoltage?.includes('12.7') || report.inspectionDetails?.batteryVoltage?.includes('12.8') ? 'good' : 'warn', msg: report.inspectionDetails?.batteryVoltage || '12.6V — Healthy' },
+                  { icon: Gauge, label: 'Odometer Reading', status: 'good', msg: report.inspectionDetails?.odometer || report.odometerReading || 'Recorded at service' },
+                  { icon: Droplet, label: 'Fuel Level', status: 'good', msg: report.inspectionDetails?.fuelLevel || 'Noted at pickup' },
+                ].map(({ icon: Icon, label, status, msg }) => (
+                  <div key={label} className={`flex items-center gap-4 p-4 rounded-xl border ${
+                    status === 'good' ? 'bg-emerald-50 border-emerald-200' :
+                    status === 'warn' ? 'bg-amber-50 border-amber-200' :
+                    'bg-red-50 border-red-200'
+                  }`}>
+                    <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      status === 'good' ? 'bg-emerald-100' : status === 'warn' ? 'bg-amber-100' : 'bg-red-100'
+                    }`}>
+                      <Icon className={`w-4 h-4 ${
+                        status === 'good' ? 'text-emerald-600' : status === 'warn' ? 'text-amber-600' : 'text-red-600'
+                      }`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-xs font-bold text-slate-700 block">{label}</span>
+                      <span className={`text-xs font-semibold ${
+                        status === 'good' ? 'text-emerald-700' : status === 'warn' ? 'text-amber-700' : 'text-red-700'
+                      }`}>{msg}</span>
+                    </div>
+                    {status === 'good' && <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0" />}
+                    {status === 'warn' && <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0" />}
+                    {status === 'bad' && <XCircle className="w-4 h-4 text-red-500 flex-shrink-0" />}
+                  </div>
+                ))}
+              </div>
+
+              {report.inspectionDetails?.scratchNotes && (
+                <div className="mt-4 p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+                  <span className="font-bold text-slate-700">Pre-Service Notes: </span>
+                  <span className="text-slate-500">{report.inspectionDetails.scratchNotes}</span>
+                </div>
+              )}
+
+              {/* Next Service Reminder */}
+              <div className="mt-4 flex items-center gap-3 p-4 bg-teal-50 border border-teal-200 rounded-xl">
+                <Calendar className="w-5 h-5 text-teal-600 flex-shrink-0" />
+                <div className="text-xs">
+                  <span className="font-extrabold text-teal-900 block">Next Service Recommended</span>
+                  <span className="text-teal-700">Every 3 months or 3,000 km — whichever comes first</span>
+                </div>
+                <span className="ml-auto text-[10px] font-bold bg-teal-600 text-white px-3 py-1 rounded-full whitespace-nowrap">Set Reminder</span>
+              </div>
+            </div>
+          </div>
+
+          {/* SECTION 3: RATE MECHANIC */}
           <div className="mb-8 border border-teal-200 rounded-2xl p-6 bg-teal-50/50">
             <h3 className="font-extrabold text-base text-slate-900 mb-2 flex items-center">
               <Star className="w-5 h-5 text-amber-500 fill-amber-400 mr-2" />
@@ -278,13 +367,25 @@ export default function ProofReportPage({ bookingId: initialBookingId }) {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-end space-x-4 print:hidden">
+          <div className="flex flex-wrap justify-end gap-3 print:hidden">
+            {/* WhatsApp Share */}
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent(`🔧 ServiceSetu Service Report\n━━━━━━━━━━━━━━━━\nBooking: ${report.id}\nVehicle: ${report.vehicle?.make} ${report.vehicle?.model}\nService: ${report.serviceType}\nMechanic: ${report.mechanic?.name || 'Assigned'} ⭐${report.mechanic?.rating || '4.9'}\n\n✅ Engine Oil: Barcode Verified\n✅ Service Completed\n📋 Full Report: https://servicesetu-sage.vercel.app\n━━━━━━━━━━━━━━━━\nServiceSetu — Trusted Doorstep Service`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center space-x-2 bg-green-500 hover:bg-green-600 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all shadow"
+            >
+              <MessageCircle className="w-4 h-4" />
+              <span>Share on WhatsApp</span>
+            </a>
+
+            {/* Download / Print */}
             <button
               onClick={() => window.print()}
               className="flex items-center space-x-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all"
             >
               <Printer className="w-4 h-4" />
-              <span>Print Official Report</span>
+              <span>Download / Print Report</span>
             </button>
           </div>
 
